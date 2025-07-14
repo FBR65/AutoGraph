@@ -1,0 +1,104 @@
+2025-07-14 21:11:14,295 - autograph.extractors.text - INFO - Text extrahiert aus: test_data.txt
+2025-07-14 21:39:06,258 - autograph.processors.ner - INFO - SpaCy Modell geladen: de_core_news_lg
+2025-07-14 21:40:31,632 - autograph.processors.ner - INFO - SpaCy Modell geladen: de_core_news_lg
+2025-07-14 21:40:33,117 - autograph.storage.neo4j - INFO - Verbunden mit Neo4j: bolt://localhost:7687
+2025-07-14 21:40:33,117 - autograph.core.pipeline - INFO - Starte AutoGraph Pipeline für: test-data.txt
+2025-07-14 21:40:33,118 - autograph.extractors.text - INFO - Text extrahiert aus: test-data.txt
+2025-07-14 21:40:33,118 - autograph.core.pipeline - INFO - Extrahiert: 1 Datenpunkte
+2025-07-14 21:40:33,145 - autograph.processors.ner - INFO - NER abgeschlossen: 11 Entitäten, 0 Beziehungen
+2025-07-14 21:40:33,146 - autograph.core.pipeline - INFO - Verarbeitet durch NERProcessor
+2025-07-14 21:40:34,396 - autograph.storage.neo4j - INFO - Gespeichert: 11 Entitäten, 0 Beziehungen
+2025-07-14 21:40:34,396 - autograph.core.pipeline - INFO - Daten im Knowledge Graph gespeichert
+2025-07-14 21:40:34,397 - autograph.core.pipeline - INFO - Pipeline erfolgreich abgeschlossen
+2025-07-14 21:47:57,120 - autograph.processors.ner - INFO - SpaCy Modell geladen: de_core_news_lg
+2025-07-14 21:47:57,195 - autograph.storage.neo4j - INFO - Verbunden mit Neo4j: bolt://localhost:7687
+2025-07-14 21:47:57,195 - autograph.core.pipeline - INFO - Starte AutoGraph Pipeline für: test-data.txt
+2025-07-14 21:47:57,197 - autograph.extractors.text - INFO - Text extrahiert aus: test-data.txt
+2025-07-14 21:47:57,197 - autograph.core.pipeline - INFO - Extrahiert: 4 Datenpunkte
+2025-07-14 21:47:57,303 - autograph.processors.ner - INFO - NER abgeschlossen: 59 Entitäten, 0 Beziehungen
+2025-07-14 21:47:57,303 - autograph.core.pipeline - INFO - Verarbeitet durch NERProcessor
+2025-07-14 21:47:57,949 - autograph.storage.neo4j - INFO - Gespeichert: 59 Entitäten, 0 Beziehungen
+2025-07-14 21:47:57,949 - autograph.core.pipeline - INFO - Daten im Knowledge Graph gespeichert
+2025-07-14 21:47:57,950 - autograph.core.pipeline - INFO - Pipeline erfolgreich abgeschlossen
+2025-07-14 21:53:46,788 - autograph.processors.ner - INFO - SpaCy Modell geladen: de_core_news_lg
+2025-07-14 21:53:46,850 - autograph.storage.neo4j - INFO - Verbunden mit Neo4j: bolt://localhost:7687
+2025-07-14 21:53:46,850 - autograph.core.pipeline - INFO - Starte AutoGraph Pipeline für: test_data.txt
+2025-07-14 21:53:46,850 - autograph.extractors.text - INFO - Text extrahiert aus: test_data.txt
+2025-07-14 21:53:46,851 - autograph.core.pipeline - INFO - Extrahiert: 1 Datenpunkte
+2025-07-14 21:53:46,871 - autograph.processors.ner - INFO - NER abgeschlossen: 24 Entitäten, 0 Beziehungen
+2025-07-14 21:53:46,871 - autograph.core.pipeline - INFO - Verarbeitet durch NERProcessor
+2025-07-14 21:53:47,045 - autograph.storage.neo4j - INFO - Gespeichert: 24 Entitäten, 0 Beziehungen
+2025-07-14 21:53:47,046 - autograph.core.pipeline - INFO - Daten im Knowledge Graph gespeichert
+2025-07-14 21:53:47,046 - autograph.core.pipeline - INFO - Pipeline erfolgreich abgeschlossen
+2025-07-14 21:55:45,310 - autograph.processors.ner - INFO - SpaCy Modell geladen: de_core_news_lg
+2025-07-14 21:55:45,376 - autograph.storage.neo4j - INFO - Verbunden mit Neo4j: bolt://localhost:7687
+2025-07-14 21:55:45,376 - autograph.core.pipeline - INFO - Starte AutoGraph Pipeline für: test_data.txt
+2025-07-14 21:55:45,377 - autograph.extractors.text - INFO - Text extrahiert aus: test_data.txt
+2025-07-14 21:55:45,377 - autograph.core.pipeline - INFO - Extrahiert: 1 Datenpunkte
+2025-07-14 21:55:45,403 - autograph.processors.ner - INFO - NER abgeschlossen: 24 Entitäten, 5 Beziehungen
+2025-07-14 21:55:45,403 - autograph.core.pipeline - INFO - Verarbeitet durch NERProcessor
+2025-07-14 21:55:45,913 - autograph.storage.neo4j - INFO - Gespeichert: 24 Entitäten, 5 Beziehungen
+2025-07-14 21:55:45,913 - autograph.core.pipeline - INFO - Daten im Knowledge Graph gespeichert
+2025-07-14 21:55:45,913 - autograph.core.pipeline - INFO - Pipeline erfolgreich abgeschlossen
+2025-07-14 21:59:55,390 - autograph.processors.ner - INFO - SpaCy Modell geladen: de_core_news_lg
+2025-07-14 21:59:55,453 - autograph.storage.neo4j - INFO - Verbunden mit Neo4j: bolt://localhost:7687
+2025-07-14 21:59:55,454 - autograph.core.pipeline - INFO - Starte AutoGraph Pipeline für: test-data.txt
+2025-07-14 21:59:55,454 - autograph.extractors.text - INFO - Text extrahiert aus: test-data.txt
+2025-07-14 21:59:55,454 - autograph.core.pipeline - INFO - Extrahiert: 4 Datenpunkte
+2025-07-14 21:59:55,556 - autograph.processors.ner - INFO - NER abgeschlossen: 59 Entitäten, 0 Beziehungen
+2025-07-14 21:59:55,556 - autograph.core.pipeline - INFO - Verarbeitet durch NERProcessor
+2025-07-14 21:59:55,880 - autograph.storage.neo4j - INFO - Gespeichert: 59 Entitäten, 0 Beziehungen
+2025-07-14 21:59:55,880 - autograph.core.pipeline - INFO - Daten im Knowledge Graph gespeichert
+2025-07-14 21:59:55,880 - autograph.core.pipeline - INFO - Pipeline erfolgreich abgeschlossen
+2025-07-14 22:14:15,296 - autograph.storage.neo4j - INFO - Verbunden mit Neo4j: bolt://localhost:7687
+2025-07-14 22:14:39,734 - autograph.storage.neo4j - INFO - Verbunden mit Neo4j: bolt://localhost:7687
+2025-07-14 22:14:51,200 - autograph.storage.neo4j - INFO - Verbunden mit Neo4j: bolt://localhost:7687
+2025-07-14 22:15:31,562 - autograph.processors.ner - INFO - SpaCy Modell geladen: de_core_news_lg
+2025-07-14 22:16:48,993 - autograph.processors.ner - INFO - SpaCy Modell geladen: de_core_news_lg
+2025-07-14 22:16:50,707 - autograph.processors.relation_extractor - INFO - SpaCy Modell für Relation Extraction geladen: de_core_news_lg
+2025-07-14 22:16:50,769 - autograph.storage.neo4j - INFO - Verbunden mit Neo4j: bolt://localhost:7687
+2025-07-14 22:16:50,769 - autograph.core.pipeline - INFO - Starte AutoGraph Pipeline für: test-data.txt
+2025-07-14 22:16:50,770 - autograph.extractors.text - INFO - Text extrahiert aus: test-data.txt
+2025-07-14 22:16:50,770 - autograph.core.pipeline - INFO - Extrahiert: 4 Datenpunkte
+2025-07-14 22:16:50,853 - autograph.processors.ner - INFO - NER abgeschlossen: 59 Entitäten, 0 Beziehungen
+2025-07-14 22:16:50,853 - autograph.core.pipeline - INFO - Verarbeitet durch NERProcessor
+2025-07-14 22:16:50,853 - autograph.core.pipeline - ERROR - Fehler in Pipeline: 'str' object has no attribute 'get'
+2025-07-14 22:18:59,973 - autograph.processors.ner - INFO - SpaCy Modell geladen: de_core_news_lg
+2025-07-14 22:19:01,435 - autograph.processors.relation_extractor - INFO - SpaCy Modell für Relation Extraction geladen: de_core_news_lg
+2025-07-14 22:19:01,494 - autograph.storage.neo4j - INFO - Verbunden mit Neo4j: bolt://localhost:7687
+2025-07-14 22:19:01,494 - autograph.core.pipeline - INFO - Starte AutoGraph Pipeline für: test-data.txt
+2025-07-14 22:19:01,495 - autograph.extractors.text - INFO - Text extrahiert aus: test-data.txt
+2025-07-14 22:19:01,495 - autograph.core.pipeline - INFO - Extrahiert: 4 Datenpunkte
+2025-07-14 22:19:01,580 - autograph.processors.ner - INFO - NER abgeschlossen: 59 Entitäten, 0 Beziehungen
+2025-07-14 22:19:01,580 - autograph.core.pipeline - INFO - Verarbeitet durch NERProcessor
+2025-07-14 22:19:01,669 - autograph.processors.relation_extractor - INFO - Relation Extraction abgeschlossen: 59 Entitäten, 43 Beziehungen
+2025-07-14 22:19:01,670 - autograph.core.pipeline - INFO - Verarbeitet durch RelationExtractor
+2025-07-14 22:19:02,660 - autograph.storage.neo4j - INFO - Gespeichert: 118 Entitäten, 43 Beziehungen
+2025-07-14 22:19:02,661 - autograph.core.pipeline - INFO - Daten im Knowledge Graph gespeichert
+2025-07-14 22:19:02,661 - autograph.core.pipeline - INFO - Pipeline erfolgreich abgeschlossen
+2025-07-14 22:19:44,420 - autograph.storage.neo4j - INFO - Verbunden mit Neo4j: bolt://localhost:7687
+2025-07-14 22:25:49,811 - autograph.processors.ner - INFO - SpaCy Modell geladen: de_core_news_lg
+2025-07-14 22:25:51,550 - autograph.processors.relation_extractor - INFO - SpaCy Modell für Relation Extraction geladen: de_core_news_lg
+2025-07-14 22:25:51,616 - autograph.storage.neo4j - INFO - Verbunden mit Neo4j: bolt://localhost:7687
+2025-07-14 22:25:51,617 - autograph.core.pipeline - INFO - Starte AutoGraph Pipeline für: test-wirtschaft.txt
+2025-07-14 22:25:51,617 - autograph.extractors.text - INFO - Text extrahiert aus: test-wirtschaft.txt
+2025-07-14 22:25:51,617 - autograph.core.pipeline - INFO - Extrahiert: 1 Datenpunkte
+2025-07-14 22:25:51,659 - autograph.processors.ner - INFO - NER abgeschlossen: 17 Entitäten, 0 Beziehungen
+2025-07-14 22:25:51,660 - autograph.core.pipeline - INFO - Verarbeitet durch NERProcessor
+2025-07-14 22:25:51,683 - autograph.processors.relation_extractor - INFO - Relation Extraction abgeschlossen: 17 Entitäten, 11 Beziehungen
+2025-07-14 22:25:51,684 - autograph.core.pipeline - INFO - Verarbeitet durch RelationExtractor
+2025-07-14 22:25:52,071 - autograph.storage.neo4j - INFO - Gespeichert: 34 Entitäten, 11 Beziehungen
+2025-07-14 22:25:52,071 - autograph.core.pipeline - INFO - Daten im Knowledge Graph gespeichert
+2025-07-14 22:25:52,071 - autograph.core.pipeline - INFO - Pipeline erfolgreich abgeschlossen
+2025-07-14 22:26:15,140 - autograph.processors.relation_extractor - INFO - SpaCy Modell für Relation Extraction geladen: de_core_news_lg
+2025-07-14 22:26:15,202 - autograph.storage.neo4j - INFO - Verbunden mit Neo4j: bolt://localhost:7687
+2025-07-14 22:26:15,202 - autograph.core.pipeline - INFO - Starte AutoGraph Pipeline für: test-wirtschaft.txt
+2025-07-14 22:26:15,202 - autograph.core.pipeline - INFO - Domäne: wirtschaft
+2025-07-14 22:26:15,203 - autograph.extractors.text - INFO - Text extrahiert aus: test-wirtschaft.txt
+2025-07-14 22:26:15,203 - autograph.core.pipeline - INFO - Extrahiert: 1 Datenpunkte
+2025-07-14 22:26:15,203 - autograph.processors.relation_extractor - INFO - Domäne gesetzt: wirtschaft (11 Muster aktiv)
+2025-07-14 22:26:15,225 - autograph.processors.relation_extractor - INFO - Relation Extraction abgeschlossen: 17 Entitäten, 11 Beziehungen
+2025-07-14 22:26:15,225 - autograph.core.pipeline - INFO - Verarbeitet durch RelationExtractor
+2025-07-14 22:26:15,383 - autograph.storage.neo4j - INFO - Gespeichert: 17 Entitäten, 11 Beziehungen
+2025-07-14 22:26:15,383 - autograph.core.pipeline - INFO - Daten im Knowledge Graph gespeichert
+2025-07-14 22:26:15,383 - autograph.core.pipeline - INFO - Pipeline erfolgreich abgeschlossen

@@ -1,0 +1,12 @@
+[
+  {
+    "content": "Apple Inc. ist ein amerikanisches Technologieunternehmen mit Hauptsitz in Cupertino, Kalifornien.\nDas Unternehmen wurde 1976 von Steve Jobs, Steve Wozniak und Ronald Wayne gegründet.\n\nTim Cook ist seit 2011 der CEO von Apple. Das Unternehmen entwickelt und verkauft Smartphones, \nTablets, Computer und andere elektronische Geräte. Das iPhone ist eines der bekanntesten Produkte \nvon Apple.\n\nMicrosoft Corporation wurde 1975 von Bill Gates und Paul Allen in Albuquerque, New Mexico gegründet.\nHeute hat Microsoft seinen Hauptsitz in Redmond, Washington. Satya Nadella leitet das Unternehmen \nseit 2014 als CEO.\n\nDie beiden Unternehmen Apple und Microsoft sind wichtige Konkurrenten im Technologiesektor.\nApple konzentriert sich auf Consumer-Elektronik, während Microsoft sich auf Software und \nCloud-Services spezialisiert hat.\n",
+    "source": "test_data.txt",
+    "chunk_id": 0,
+    "type": "text_chunk",
+    "metadata": {
+      "file_size": 845,
+      "chunk_size": 827
+    }
+  }
+]
