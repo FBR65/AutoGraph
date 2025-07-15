@@ -4,12 +4,15 @@ CLI Interface für AutoGraph
 
 import click
 import logging
+import asyncio
 from pathlib import Path
 from typing import Optional
 
 from .config import AutoGraphConfig
 from .core.pipeline import AutoGraphPipeline
+from .core.async_pipeline import AsyncAutoGraphPipeline
 from .extractors.text import TextExtractor
+from .extractors.table import TableExtractor
 from .processors.ner import NERProcessor
 from .storage.neo4j import Neo4jStorage
 
@@ -165,11 +168,12 @@ def menu(ctx):
         click.echo("1. 📄 Text verarbeiten (NER + Beziehungen)")
         click.echo("2. 🧠 Nur NER (Named Entity Recognition)")
         click.echo("3. 🔗 Nur Beziehungsextraktion")
-        click.echo("4. 🗂️  Datenbank anzeigen")
-        click.echo("5. 🗑️  Datenbank löschen")
-        click.echo("6. 🆕 Neue Datenbank erstellen")
-        click.echo("7. ⚙️  Konfiguration anzeigen")
-        click.echo("8. 📊 Statistiken anzeigen")
+        click.echo("4. � Tabelle verarbeiten (CSV/Excel)")
+        click.echo("5. �🗂️  Datenbank anzeigen")
+        click.echo("6. 🗑️  Datenbank löschen")
+        click.echo("7. 🆕 Neue Datenbank erstellen")
+        click.echo("8. ⚙️  Konfiguration anzeigen")
+        click.echo("9. � Statistiken anzeigen")
         click.echo("0. ❌ Beenden")
         click.echo("-" * 50)
 
@@ -185,14 +189,16 @@ def menu(ctx):
         elif choice == 3:
             _menu_process_text(ctx, "relation")
         elif choice == 4:
-            _menu_show_database(ctx)
+            _menu_process_table(ctx)
         elif choice == 5:
-            _menu_clear_database(ctx)
+            _menu_show_database(ctx)
         elif choice == 6:
-            _menu_create_database(ctx)
+            _menu_clear_database(ctx)
         elif choice == 7:
-            _menu_show_config(ctx)
+            _menu_create_database(ctx)
         elif choice == 8:
+            _menu_show_config(ctx)
+        elif choice == 9:
             _menu_show_stats(ctx)
         else:
             click.echo("❌ Ungültige Auswahl!")
@@ -370,6 +376,134 @@ def _menu_show_stats(ctx):
 
     except Exception as e:
         click.echo(f"❌ Fehler beim Abrufen der Statistiken: {str(e)}")
+
+
+def _menu_process_table(ctx):
+    """Menü für Tabellen-Verarbeitung"""
+    file_path = click.prompt("Datei-Pfad (CSV/Excel/TSV/JSON)", type=str)
+
+    if not Path(file_path).exists():
+        click.echo(f"❌ Datei nicht gefunden: {file_path}")
+        return
+
+    # Verarbeitungsmodus auswählen
+    click.echo("\n📊 Verarbeitungsmodus:")
+    click.echo("1. Zeilenweise (row_wise)")
+    click.echo("2. Spaltenweise (column_wise)")
+    click.echo("3. Zellenweise (cell_wise)")
+    click.echo("4. Kombiniert (combined)")
+
+    mode_choice = click.prompt("Modus auswählen", type=int, default=4)
+    mode_map = {1: "row_wise", 2: "column_wise", 3: "cell_wise", 4: "combined"}
+
+    processing_mode = mode_map.get(mode_choice, "combined")
+
+    # Domain optional
+    domain = click.prompt(
+        "Domäne (optional, z.B. medizin, wirtschaft)", default="", show_default=False
+    )
+    domain = domain.strip() or None
+
+    try:
+        # Tabellen-Extraktor mit Konfiguration verwenden
+        table_config = {
+            "processing_mode": processing_mode,
+            "max_rows": 1000,  # Limit für Demo
+            "include_metadata": True,
+        }
+
+        extractor = TableExtractor(config=table_config)
+        extracted_data = extractor.extract(file_path)
+
+        if not extracted_data:
+            click.echo("❌ Keine Daten extrahiert")
+            return
+
+        click.echo(f"✅ {len(extracted_data)} Datenpunkte extrahiert")
+
+        # Pipeline konfigurieren
+        config = _get_config(ctx)
+
+        # Pipeline-Komponenten initialisieren
+        from .extractors.text import TextExtractor
+        from .processors.ner import NERProcessor
+        from .processors.relation_extractor import RelationExtractor
+        from .storage.neo4j import Neo4jStorage
+
+        text_extractor = TextExtractor()
+        ner_processor = NERProcessor()
+        relation_processor = RelationExtractor()
+
+        # Neo4j Konfiguration als Dictionary
+        neo4j_config = {
+            "uri": getattr(config.neo4j, "uri", "bolt://localhost:7687"),
+            "username": getattr(config.neo4j, "username", "neo4j"),
+            "password": getattr(config.neo4j, "password", ""),
+            "database": getattr(config.neo4j, "database", "neo4j"),
+        }
+        storage = Neo4jStorage(neo4j_config)
+
+        pipeline = AutoGraphPipeline(
+            config=config,
+            extractor=text_extractor,
+            processors=[ner_processor, relation_processor],
+            storage=storage,
+        )
+
+        # Daten zu Text konvertieren für weitere Verarbeitung
+        text_data = []
+        for item in extracted_data:
+            if isinstance(item, dict) and "content" in item:
+                text_data.append(item["content"])
+            elif isinstance(item, str):
+                text_data.append(item)
+
+        if text_data:
+            combined_text = "\n".join(text_data)
+            click.echo("🚀 Starte NER und Beziehungsextraktion...")
+
+            # Temporäre Textdatei erstellen für Pipeline
+            import tempfile
+            import os
+
+            with tempfile.NamedTemporaryFile(
+                mode="w", suffix=".txt", delete=False, encoding="utf-8"
+            ) as tmp_file:
+                tmp_file.write(combined_text)
+                tmp_file_path = tmp_file.name
+
+            try:
+                results = pipeline.run(data_source=tmp_file_path, domain=domain)
+
+                entities = results.entities
+                relationships = results.relationships
+
+                click.echo(f"✅ Verarbeitung abgeschlossen!")
+                click.echo(f"📋 Entitäten gefunden: {len(entities)}")
+                click.echo(f"🔗 Beziehungen gefunden: {len(relationships)}")
+
+                if entities:
+                    click.echo(f"\n📋 Beispiel-Entitäten:")
+                    for entity in entities[:5]:
+                        click.echo(
+                            f"  • {entity.get('text', 'N/A')} ({entity.get('label', 'N/A')})"
+                        )
+
+                if relationships:
+                    click.echo(f"\n🔗 Beispiel-Beziehungen:")
+                    for rel in relationships[:5]:
+                        click.echo(
+                            f"  • {rel.get('source', 'N/A')} -> {rel.get('target', 'N/A')} ({rel.get('type', 'N/A')})"
+                        )
+
+            finally:
+                # Temp-Datei wieder löschen
+                os.unlink(tmp_file_path)
+        else:
+            click.echo("❌ Keine verarbeitbaren Textdaten gefunden")
+
+    except Exception as e:
+        click.echo(f"❌ Fehler bei der Verarbeitung: {str(e)}")
 
 
 def main():

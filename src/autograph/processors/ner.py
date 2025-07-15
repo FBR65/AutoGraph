@@ -5,8 +5,10 @@ Named Entity Recognition Prozessor
 from typing import List, Dict, Any
 import logging
 import spacy
+import asyncio
 
 from .base import BaseProcessor
+from ..core.cache import cache_async_method
 
 
 class NERProcessor(BaseProcessor):
@@ -17,7 +19,7 @@ class NERProcessor(BaseProcessor):
         self.logger = logging.getLogger(__name__)
 
         # Konfiguration
-        self.model_name = self.config.get("ner_model", "de_core_news_sm")
+        self.model_name = self.config.get("ner_model", "de_core_news_lg")
         self.confidence_threshold = self.config.get("ner_confidence_threshold", 0.8)
 
         # SpaCy Modell laden
@@ -27,6 +29,9 @@ class NERProcessor(BaseProcessor):
         except OSError:
             self.logger.error(f"SpaCy Modell nicht gefunden: {self.model_name}")
             raise
+        
+        # Cache Manager (wird von Pipeline gesetzt)
+        self.cache_manager = None
 
     def process(self, data: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Führt NER auf allen Textdaten durch"""
@@ -198,3 +203,96 @@ class NERProcessor(BaseProcessor):
             }
 
         return None
+
+    @cache_async_method(cache_type="ner", ttl=3600)
+    async def process_async(self, data: Any, domain: str = None) -> Dict[str, Any]:
+        """
+        Asynchrone NER-Verarbeitung mit Caching
+        """
+        if isinstance(data, str):
+            # Direkter Text
+            text = data
+            source = "direct_input"
+        elif isinstance(data, list):
+            # Liste von Datenpunkten
+            return await self._process_data_list_async(data, domain)
+        elif isinstance(data, dict) and "text" in data:
+            # Bereits verarbeitete Daten
+            text = data["text"]
+            source = data.get("source", "unknown")
+        else:
+            self.logger.warning(f"Unbekannter Datentyp für NER: {type(data)}")
+            return {"entities": [], "text": str(data)}
+        
+        # NER in Thread ausführen (CPU-intensive)
+        entities = await asyncio.get_event_loop().run_in_executor(
+            None, self._extract_entities_from_text, text, source
+        )
+        
+        return {
+            "text": text,
+            "entities": entities,
+            "source": source,
+            "processor": "NERProcessor"
+        }
+    
+    async def _process_data_list_async(self, data: List[Dict[str, Any]], domain: str = None) -> Dict[str, Any]:
+        """Verarbeitet Liste von Datenpunkten asynchron"""
+        all_entities = []
+        
+        # Parallel processing für mehrere Datenpunkte
+        tasks = []
+        for item in data:
+            content = item.get("content", "")
+            source = item.get("source", "unknown")
+            
+            if content.strip():  # Nur nicht-leere Inhalte verarbeiten
+                task = asyncio.get_event_loop().run_in_executor(
+                    None, self._extract_entities_from_text, content, source
+                )
+                tasks.append(task)
+        
+        # Alle Tasks parallel ausführen
+        results = await asyncio.gather(*tasks)
+        
+        # Ergebnisse zusammenführen
+        for entities in results:
+            all_entities.extend(entities)
+        
+        return {
+            "entities": all_entities,
+            "data": data,
+            "processor": "NERProcessor"
+        }
+    
+    def _extract_entities_from_text(self, text: str, source: str = "unknown") -> List[Dict[str, Any]]:
+        """
+        Extrahiert Entitäten aus einem Text (für Thread-Pool Execution)
+        """
+        entities = []
+        
+        try:
+            # NER durchführen
+            doc = self.nlp(text)
+            
+            # Entitäten extrahieren
+            for ent in doc.ents:
+                entity = {
+                    "text": ent.text,
+                    "label": ent.label_,
+                    "start": ent.start_char,
+                    "end": ent.end_char,
+                    "confidence": 1.0,  # SpaCy gibt keine direkte Confidence zurück
+                    "source": source,
+                }
+                
+                # Nur Entitäten über Confidence-Schwelle
+                if entity["confidence"] >= self.confidence_threshold:
+                    entities.append(entity)
+            
+            self.logger.debug(f"NER: {len(entities)} Entitäten in {len(text)} Zeichen gefunden")
+            
+        except Exception as e:
+            self.logger.error(f"Fehler bei NER: {e}")
+        
+        return entities

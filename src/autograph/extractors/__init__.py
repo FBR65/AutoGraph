@@ -2,16 +2,10 @@
 
 from .text import TextExtractor
 from .base import BaseExtractor
+from .table import TableExtractor
 
 
 # Placeholder für zukünftige Extraktoren
-class TableExtractor(BaseExtractor):
-    """Placeholder für Tabellen-Extraktor"""
-
-    def extract(self, source):
-        return []
-
-
 class WebExtractor(BaseExtractor):
     """Placeholder für Web-Extraktor"""
 

@@ -5,9 +5,11 @@ Erweiterte Beziehungsextraktion basierend auf syntaktischen Abhängigkeiten
 from typing import List, Dict, Any, Tuple, Optional
 import logging
 import spacy
+import asyncio
 from spacy.tokens import Doc, Token
 
 from .base import BaseProcessor
+from ..core.cache import cache_async_method
 
 
 class RelationExtractor(BaseProcessor):
@@ -36,6 +38,127 @@ class RelationExtractor(BaseProcessor):
 
         # Beziehungsmuster definieren
         self.relation_patterns = self._define_relation_patterns()
+
+        # Cache Manager (wird von Pipeline gesetzt)
+        self.cache_manager = None
+
+    @cache_async_method(cache_type="relations", ttl=3600)
+    async def process_async(self, data: Any, domain: str = None) -> Dict[str, Any]:
+        """
+        Asynchrone Beziehungsextraktion mit Caching
+        """
+        self.domain = domain
+
+        if isinstance(data, str):
+            # Direkter Text - erst NER durchführen
+            entities = await asyncio.get_event_loop().run_in_executor(
+                None, self._extract_entities_from_text, data
+            )
+            text = data
+        elif isinstance(data, dict):
+            if "entities" in data:
+                # Bereits verarbeitete Daten mit Entitäten
+                entities = data["entities"]
+                text = data.get("text", "")
+            elif "text" in data:
+                # Nur Text
+                text = data["text"]
+                entities = await asyncio.get_event_loop().run_in_executor(
+                    None, self._extract_entities_from_text, text
+                )
+            else:
+                self.logger.warning(f"Unbekannte Datenstruktur: {data}")
+                return {"relationships": [], "entities": []}
+        else:
+            self.logger.warning(f"Unbekannter Datentyp für Relations: {type(data)}")
+            return {"relationships": [], "entities": []}
+
+        # Beziehungsextraktion in Thread Pool
+        relationships = await asyncio.get_event_loop().run_in_executor(
+            None, self._extract_relationships_from_entities, text, entities
+        )
+
+        return {
+            "text": text,
+            "entities": entities,
+            "relationships": relationships,
+            "processor": "RelationExtractor",
+            "domain": domain,
+        }
+
+    def _extract_entities_from_text(self, text: str) -> List[Dict[str, Any]]:
+        """Extrahiert Entitäten aus Text (falls noch nicht vorhanden)"""
+        entities = []
+        doc = self.nlp(text)
+
+        for ent in doc.ents:
+            entities.append(
+                {
+                    "text": ent.text,
+                    "label": ent.label_,
+                    "start": ent.start_char,
+                    "end": ent.end_char,
+                    "confidence": 1.0,
+                }
+            )
+
+        return entities
+
+    def _extract_relationships_from_entities(
+        self, text: str, entities: List[Dict[str, Any]]
+    ) -> List[Dict[str, Any]]:
+        """Extrahiert Beziehungen aus Text und Entitäten"""
+        doc = self.nlp(text)
+        relationships = []
+
+        # Methode 1: Abhängigkeitsbasierte Extraktion
+        dep_relations = self._extract_dependency_based_relations(doc, entities)
+        relationships.extend(dep_relations)
+
+        # Methode 2: Musterbasierte Extraktion
+        pattern_relations = self._extract_pattern_based_relations(doc, entities)
+        relationships.extend(pattern_relations)
+
+        # Methode 3: Satzstruktur-basierte Extraktion
+        sentence_relations = self._extract_sentence_structure_relations(doc, entities)
+        relationships.extend(sentence_relations)
+
+        # Duplikate entfernen
+        unique_relations = self._deduplicate_relations(relationships)
+
+        self.logger.debug(f"Relations: {len(unique_relations)} Beziehungen gefunden")
+        return unique_relations
+
+    def _extract_dependency_based_relations(self, doc, entities):
+        """Extrahiert Beziehungen basierend auf syntaktischen Abhängigkeiten"""
+        return self._extract_dependency_relations(doc, "unknown")
+
+    def _extract_pattern_based_relations(self, doc, entities):
+        """Extrahiert Beziehungen basierend auf vordefinierten Mustern"""
+        return self._extract_pattern_relations(doc, "unknown")
+
+    def _extract_sentence_structure_relations(self, doc, entities):
+        """Extrahiert Beziehungen basierend auf Satzstruktur"""
+        return self._extract_sentence_relations(doc, "unknown")
+
+    def _deduplicate_relations(self, relationships):
+        """Entfernt doppelte Beziehungen"""
+        seen = set()
+        unique_relations = []
+
+        for rel in relationships:
+            # Erstelle einen eindeutigen Key für die Beziehung
+            key = (
+                rel.get("subject", "").lower().strip(),
+                rel.get("predicate", "").lower().strip(),
+                rel.get("object", "").lower().strip(),
+            )
+
+            if key not in seen and all(key):  # Nur wenn alle Felder vorhanden
+                seen.add(key)
+                unique_relations.append(rel)
+
+        return unique_relations
 
     def _define_relation_patterns(self) -> Dict[str, Dict]:
         """Definiert syntaktische Muster für verschiedene Beziehungstypen"""
