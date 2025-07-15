@@ -75,7 +75,7 @@ class AsyncAutoGraphPipeline:
         start_time = time.time()
         source_path = str(data_source)
 
-        self.logger.info(f"🚀 Starte Async Pipeline für: {source_path}")
+        self.logger.info(f"Starte Async Pipeline für: {source_path}")
 
         try:
             # 1. Text-Extraktion (mit Cache)
@@ -152,7 +152,7 @@ class AsyncAutoGraphPipeline:
             )
 
             self.logger.info(
-                f"✅ Pipeline abgeschlossen in {processing_time:.2f}s: "
+                f"Pipeline abgeschlossen in {processing_time:.2f}s: "
                 f"{len(unique_entities)} Entitäten, {len(unique_relationships)} Beziehungen"
             )
 

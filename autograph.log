@@ -102,3 +102,39 @@
 2025-07-14 22:26:15,383 - autograph.storage.neo4j - INFO - Gespeichert: 17 Entitäten, 11 Beziehungen
 2025-07-14 22:26:15,383 - autograph.core.pipeline - INFO - Daten im Knowledge Graph gespeichert
 2025-07-14 22:26:15,383 - autograph.core.pipeline - INFO - Pipeline erfolgreich abgeschlossen
+2025-07-15 23:00:08,347 - autograph.processors.ner - INFO - SpaCy Modell geladen: de_core_news_lg
+2025-07-15 23:00:09,777 - autograph.processors.relation_extractor - INFO - SpaCy Modell für Relation Extraction geladen: de_core_news_lg
+2025-07-15 23:00:09,855 - autograph.storage.neo4j - INFO - Verbunden mit Neo4j: bolt://localhost:7687
+2025-07-15 23:00:27,462 - autograph.extractors.text - INFO - Text extrahiert aus: C:\Users\frank\AppData\Local\Temp\tmp7gq5dxr8.txt
+2025-07-15 23:00:27,481 - autograph.storage.neo4j - ERROR - Fehler beim Speichern: 'dict' object has no attribute 'entities'
+2025-07-15 23:00:27,495 - autograph.extractors.text - INFO - Text extrahiert aus: C:\Users\frank\AppData\Local\Temp\tmpib_cazix.txt
+2025-07-15 23:00:27,496 - autograph.storage.neo4j - ERROR - Fehler beim Speichern: 'dict' object has no attribute 'entities'
+2025-07-15 23:00:27,525 - autograph.extractors.table - INFO - Extrahiere Tabellendaten aus: C:\Users\frank\AppData\Local\Temp\tmp20xslsmj.csv
+2025-07-15 23:00:27,540 - autograph.extractors.table - INFO - Extrahiert: 6 Datenpunkte aus 5 Zeilen
+2025-07-15 23:00:27,545 - autograph.extractors.text - INFO - Text extrahiert aus: C:\Users\frank\AppData\Local\Temp\tmp7bvjv31i.txt
+2025-07-15 23:00:27,562 - autograph.storage.neo4j - ERROR - Fehler beim Speichern: 'dict' object has no attribute 'entities'
+2025-07-15 23:04:49,837 - autograph.api.server - INFO - Starte AutoGraph API Server...
+2025-07-15 23:04:51,326 - autograph.processors.ner - INFO - SpaCy Modell geladen: de_core_news_lg
+2025-07-15 23:04:52,803 - autograph.processors.relation_extractor - INFO - SpaCy Modell für Relation Extraction geladen: de_core_news_lg
+2025-07-15 23:04:52,871 - autograph.storage.neo4j - INFO - Verbunden mit Neo4j: bolt://localhost:7687
+2025-07-15 23:04:52,871 - autograph.api.server - INFO - AutoGraph API Pipeline initialisiert
+2025-07-15 23:08:01,067 - autograph.api.server - INFO - Starte AutoGraph API Server...
+2025-07-15 23:08:02,603 - autograph.processors.ner - INFO - SpaCy Modell geladen: de_core_news_lg
+2025-07-15 23:08:04,040 - autograph.processors.relation_extractor - INFO - SpaCy Modell für Relation Extraction geladen: de_core_news_lg
+2025-07-15 23:08:04,099 - autograph.storage.neo4j - INFO - Verbunden mit Neo4j: bolt://localhost:7687
+2025-07-15 23:08:04,099 - autograph.api.server - INFO - AutoGraph API Pipeline initialisiert
+2025-07-15 23:08:40,599 - autograph.core.async_pipeline - INFO - Starte Async Pipeline für: C:\Users\frank\AppData\Local\Temp\tmpr871qrh8.txt
+2025-07-15 23:08:40,601 - autograph.extractors.text - INFO - Text extrahiert aus: C:\Users\frank\AppData\Local\Temp\tmpr871qrh8.txt
+2025-07-15 23:08:41,484 - autograph.storage.neo4j - INFO - Gespeichert: 1 Entitäten, 0 Beziehungen
+2025-07-15 23:08:41,485 - autograph.core.async_pipeline - INFO - Pipeline abgeschlossen in 0.89s: 1 Entitäten, 0 Beziehungen
+2025-07-15 23:08:41,485 - autograph.api.server - ERROR - Fehler bei Text-Verarbeitung: 'PipelineResult' object has no attribute 'get'
+2025-07-15 23:11:41,863 - autograph.api.server - INFO - Starte AutoGraph API Server...
+2025-07-15 23:11:43,417 - autograph.processors.ner - INFO - SpaCy Modell geladen: de_core_news_lg
+2025-07-15 23:11:44,879 - autograph.processors.relation_extractor - INFO - SpaCy Modell für Relation Extraction geladen: de_core_news_lg
+2025-07-15 23:11:44,940 - autograph.storage.neo4j - INFO - Verbunden mit Neo4j: bolt://localhost:7687
+2025-07-15 23:11:44,940 - autograph.api.server - INFO - AutoGraph API Pipeline initialisiert
+2025-07-15 23:12:04,892 - autograph.core.async_pipeline - INFO - Starte Async Pipeline für: C:\Users\frank\AppData\Local\Temp\tmpzg2qknxw.txt
+2025-07-15 23:12:04,893 - autograph.extractors.text - INFO - Text extrahiert aus: C:\Users\frank\AppData\Local\Temp\tmpzg2qknxw.txt
+2025-07-15 23:12:04,935 - autograph.storage.neo4j - INFO - Gespeichert: 1 Entitäten, 0 Beziehungen
+2025-07-15 23:12:04,935 - autograph.core.async_pipeline - INFO - Pipeline abgeschlossen in 0.04s: 1 Entitäten, 0 Beziehungen
+2025-07-15 23:12:23,064 - autograph.core.cache - INFO - Alle Caches geleert

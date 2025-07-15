@@ -158,6 +158,40 @@ def init(
 
 
 @cli.command()
+@click.option("--host", default="127.0.0.1", help="Server Host")
+@click.option("--port", default=8000, help="Server Port")
+@click.option("--reload", is_flag=True, help="Auto-Reload aktivieren")
+@click.option("--workers", default=1, help="Anzahl Worker Prozesse")
+def serve(host: str, port: int, reload: bool, workers: int):
+    """Startet den AutoGraph REST API Server"""
+    try:
+        import uvicorn
+
+        click.echo("🚀 Starte AutoGraph REST API Server...")
+        click.echo(f"📍 URL: http://{host}:{port}")
+        click.echo(f"📚 Dokumentation: http://{host}:{port}/docs")
+        click.echo(f"🔄 Auto-Reload: {'Aktiviert' if reload else 'Deaktiviert'}")
+
+        uvicorn.run(
+            "autograph.api.server:app",
+            host=host,
+            port=port,
+            reload=reload,
+            workers=workers
+            if not reload
+            else 1,  # Reload funktioniert nur mit 1 Worker
+            log_level="info",
+        )
+
+    except ImportError:
+        click.echo("❌ uvicorn nicht installiert. Installiere mit: uv add uvicorn")
+        raise click.ClickException("uvicorn nicht verfügbar")
+    except Exception as e:
+        click.echo(f"❌ Fehler beim Starten des Servers: {e}")
+        raise click.ClickException(str(e))
+
+
+@cli.command()
 @click.pass_context
 def menu(ctx):
     """Interaktives Menü für AutoGraph"""

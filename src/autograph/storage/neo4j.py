@@ -8,7 +8,6 @@ from neo4j import GraphDatabase, Driver
 from neo4j.exceptions import ServiceUnavailable
 
 from .base import BaseStorage
-from ..types import PipelineResult
 
 
 class Neo4jStorage(BaseStorage):
@@ -52,24 +51,36 @@ class Neo4jStorage(BaseStorage):
             self.logger.error(f"Fehler bei Neo4j Verbindung: {str(e)}")
             raise
 
-    def store(self, result: PipelineResult) -> bool:
+    def store(self, result) -> bool:
         """Speichert Pipeline-Ergebnis in Neo4j"""
         if not self.driver:
             raise RuntimeError("Keine Neo4j Verbindung")
 
         try:
             with self.driver.session(database=self.database) as session:
+                # Handle both PipelineResult objects and dictionaries
+                if hasattr(result, "entities"):
+                    # PipelineResult object
+                    entities = result.entities
+                    relationships = result.relationships
+                    metadata = result.metadata
+                else:
+                    # Dictionary result from async pipeline
+                    entities = result.get("entities", [])
+                    relationships = result.get("relationships", [])
+                    metadata = result.get("metadata", {})
+
                 # Entitäten speichern
-                self._store_entities(session, result.entities)
+                self._store_entities(session, entities)
 
                 # Beziehungen speichern
-                self._store_relationships(session, result.relationships)
+                self._store_relationships(session, relationships)
 
                 # Metadaten speichern
-                self._store_metadata(session, result.metadata)
+                self._store_metadata(session, metadata)
 
             self.logger.info(
-                f"Gespeichert: {len(result.entities)} Entitäten, {len(result.relationships)} Beziehungen"
+                f"Gespeichert: {len(entities)} Entitäten, {len(relationships)} Beziehungen"
             )
             return True
 
