@@ -34,10 +34,11 @@ from pydantic import BaseModel, Field
 
 from ..config import AutoGraphConfig, Neo4jConfig
 from ..core.async_pipeline import AsyncAutoGraphPipeline
+from ..core.ml_pipeline import MLPipelineBuilder
 from ..extractors.text import TextExtractor
 from ..extractors.table import TableExtractor
 from ..processors.ner import NERProcessor
-from ..processors.relation_extractor import RelationExtractor
+from ..processors.hybrid_relation_extractor import HybridRelationExtractor
 from ..storage.neo4j import Neo4jStorage
 from ..types import PipelineResult as CorePipelineResult
 
@@ -49,6 +50,24 @@ class ProcessingMode(str, Enum):
     ner_only = "ner"
     relations_only = "relations"
     both = "both"
+
+
+class RelationExtractionMode(str, Enum):
+    """Relation Extraction Modi"""
+
+    rules = "rules"
+    ml = "ml"
+    hybrid = "hybrid"
+
+
+class EnsembleMethod(str, Enum):
+    """Ensemble-Methoden für Hybrid Extraction"""
+
+    union = "union"
+    weighted_union = "weighted_union"
+    intersection = "intersection"
+    ml_priority = "ml_priority"
+    confidence_threshold = "confidence_threshold"
 
 
 class TableProcessingMode(str, Enum):
@@ -68,6 +87,15 @@ class TextProcessRequest(BaseModel):
         None, description="Zieldomäne (z.B. medizin, wirtschaft)"
     )
     mode: ProcessingMode = Field(ProcessingMode.both, description="Verarbeitungsmodus")
+    relation_mode: RelationExtractionMode = Field(
+        RelationExtractionMode.hybrid, description="Relation Extraction Modus"
+    )
+    ensemble_method: EnsembleMethod = Field(
+        EnsembleMethod.weighted_union, description="Ensemble-Methode für Hybrid-Modus"
+    )
+    ml_confidence_threshold: float = Field(
+        0.65, ge=0.0, le=1.0, description="ML Confidence Threshold"
+    )
     use_cache: bool = Field(True, description="Cache verwenden")
 
 
@@ -172,48 +200,25 @@ async def startup_event():
     logger.info("Starte AutoGraph API Server...")
 
     try:
-        # Konfiguration
-        config = AutoGraphConfig(
-            project_name="autograph_api",
-            neo4j=Neo4jConfig(password=""),  # Passwordless für Demo
+        # ML Pipeline Builder verwenden
+        builder = MLPipelineBuilder()
+
+        # Erstelle ML-enhanced Pipeline
+        pipeline = builder.create_ml_pipeline(
+            project_name="autograph_api_ml",
+            neo4j_config={
+                "uri": "bolt://localhost:7687",
+                "username": "neo4j",
+                "password": "",
+                "database": "neo4j",
+            },
+            performance_config={"max_workers": 4, "batch_size": 8, "cache_ttl": 3600},
+            enable_ml=True,
+            enable_rules=True,
+            ensemble_method="weighted_union",
         )
 
-        # Cache-Konfiguration
-        cache_config = {
-            "ner_cache_size": 1000,
-            "relation_cache_size": 500,
-            "text_cache_size": 200,
-            "cache_ttl": 3600,  # 1 Stunde
-            "enable_disk_cache": False,
-        }
-
-        # Pipeline-Komponenten
-        text_extractor = TextExtractor()
-        ner_processor = NERProcessor()
-        relation_processor = RelationExtractor()
-
-        # Neo4j Storage
-        neo4j_config = {
-            "uri": "bolt://localhost:7687",
-            "username": "neo4j",
-            "password": "",
-            "database": "neo4j",
-            "batch_size": 100,
-        }
-        storage = Neo4jStorage(neo4j_config)
-
-        # Async Pipeline erstellen
-        pipeline = AsyncAutoGraphPipeline(
-            config=config,
-            extractor=text_extractor,
-            processors=[ner_processor, relation_processor],
-            storage=storage,
-            cache_config=cache_config,
-            max_workers=4,
-            batch_size=10,
-        )
-
-        logger.info("AutoGraph API Pipeline initialisiert")
+        logger.info("🤖 AutoGraph ML API Pipeline initialisiert")
 
     except Exception as e:
         logger.error(f"Fehler beim Initialisieren der Pipeline: {e}")
