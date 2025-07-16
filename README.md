@@ -465,18 +465,8 @@ Die AGPLv3 gewährleistet, dass:
 
 Siehe [LICENSE](LICENSE) für Details.
 
-## 🤝 Beitragen
-
-Beiträge sind willkommen! Bitte:
-
-1. Fork des Repositories erstellen
-2. Feature-Branch erstellen (`git checkout -b feature/AmazingFeature`)
-3. Änderungen committen (`git commit -m 'Add AmazingFeature'`)
-4. Branch pushen (`git push origin feature/AmazingFeature`)
-5. Pull Request erstellen
 
 ## 🆘 Support
 
-- **Issues**: [GitHub Issues](https://github.com/FBR65/AutoGraph/issues)
 - **Dokumentation**: `Documentation/` Verzeichnis
 - **API-Referenz**: `http://localhost:8001/docs` (nach Server-Start)
