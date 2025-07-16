@@ -1,0 +1,67 @@
+project_name: "autograph-online"
+description: "AutoGraph mit vollständiger Online-Ontologie-Integration"
+
+neo4j:
+  uri: "bolt://localhost:7687"
+  username: "neo4j"
+  password: "your-password"
+
+llm:
+  base_url: "http://localhost:11434/v1"
+  api_key: "not-needed"
+  model: "qwen2.5:latest"
+
+extractor:
+  text_chunking: true
+  chunk_size: 1000
+
+processor:
+  ner_model: "de_core_news_lg"
+  ner_confidence_threshold: 0.8
+  re_confidence_threshold: 0.6
+
+# Ontologie: Online-First für maximale Abdeckung
+ontology:
+  mode: "online"                               # Bevorzugt Online-Quellen
+  online_fallback: true                        # Immer Online bevorzugen
+  cache_duration: "24h"                        # Häufigere Updates
+  internet_timeout: 15                         # Längerer Timeout für große Downloads
+  
+  # Pfade für Fallbacks und Cache
+  local_ontologies_dir: "./ontologies/"
+  custom_ontologies_dir: "./custom_ontologies/"
+  cache_dir: "./cache/"
+  
+  # Online-First Quellen-Strategie
+  sources:
+    - type: "online_schema_org"                # 1. Priorität: Schema.org aktuell
+      priority: 1
+      cache: true
+      cache_duration: "24h"
+      
+    - type: "online_dbpedia"                   # 2. Priorität: DBpedia Core
+      url: "http://downloads.dbpedia.org/2016-10/dbpedia_2016-10.owl"
+      priority: 2
+      cache: true
+      cache_duration: "7d"                     # DBpedia seltener aktualisiert
+      
+    - type: "custom_yaml"                      # 3. Priorität: Custom bleibt wichtig
+      path: "./custom_ontologies/"
+      priority: 3
+      
+    - type: "cached_schema_org"                # 4. Priorität: Cache-Fallback
+      cache_path: "./cache/schema_org.ttl"
+      priority: 4
+      
+    - type: "local_rdf"                        # 5. Priorität: Lokaler Fallback
+      path: "./ontologies/"
+      priority: 5
+
+# Erweiterte Online-Features
+experimental_features:
+  ontology_validation: true
+  semantic_enrichment: true
+  linked_data_export: true                     # Export als Linked Data
+  sparql_endpoint: true                        # SPARQL-Endpoint aktivieren
+  wikidata_integration: true                   # Wikidata-Integration
+  auto_ontology_updates: true                  # Automatische Ontologie-Updates

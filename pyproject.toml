@@ -15,6 +15,11 @@ dependencies = [
     "torch>=2.1.0",
     "huggingface-hub>=0.19.0",
     "nltk>=3.8.1",
+    # Ontology and Semantic Web
+    "rdflib>=7.0.0",
+    "owlrl>=6.0.0",
+    "sparqlwrapper>=2.0.0",
+    "pyld>=2.0.0",
     # Data Processing and Analysis
     "pandas>=2.1.0",
     "numpy>=1.24.0",

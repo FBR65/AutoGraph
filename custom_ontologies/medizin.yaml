@@ -1,0 +1,84 @@
+namespace: medizin
+namespace_uri: http://autograph.custom/medizin/
+version: 1.0
+description: Medizinische Ontologie für AutoGraph
+
+classes:
+  Arzt:
+    parent: schema:Person
+    description: Medizinischer Fachperson
+    aliases: [Doktor, Mediziner, Physician]
+    properties: [fachrichtung, approbation, erfahrung_jahre]
+  
+  Patient:
+    parent: schema:Person
+    description: Person die medizinische Behandlung erhält
+    aliases: [Kranker]
+    properties: [krankenversicherung, alter, geschlecht]
+  
+  Krankenhaus:
+    parent: schema:Organization
+    description: Medizinische Einrichtung
+    aliases: [Klinik, Hospital]
+    properties: [bettenzahl, fachbereiche, träger]
+  
+  Krankheit:
+    parent: schema:MedicalCondition
+    description: Medizinische Erkrankung oder Leiden
+    aliases: [Erkrankung, Leiden, Condition]
+    properties: [icd_code, schweregrad, symptome]
+  
+  Medikament:
+    parent: schema:Drug
+    description: Arzneimittel zur Behandlung
+    aliases: [Arzneimittel, Drug]
+    properties: [wirkstoff, dosierung, nebenwirkungen]
+  
+  Behandlung:
+    parent: schema:MedicalProcedure
+    description: Medizinische Intervention oder Therapie
+    aliases: [Therapie, Treatment]
+    properties: [dauer, erfolgsrate, kosten]
+
+relations:
+  behandelt:
+    domain: [medizin:Arzt, medizin:Krankenhaus]
+    range: [medizin:Patient, medizin:Krankheit]
+    description: Medizinische Behandlung eines Patienten oder einer Krankheit
+    aliases: [therapiert, versorgt]
+  
+  diagnostiziert:
+    domain: [medizin:Arzt]
+    range: [medizin:Krankheit]
+    description: Medizinische Diagnose einer Krankheit
+    aliases: [stellt_fest, erkennt]
+  
+  verschreibt:
+    domain: [medizin:Arzt]
+    range: [medizin:Medikament]
+    description: Verschreibung von Medikamenten
+    aliases: [verordnet, rezeptiert]
+  
+  wirkt_gegen:
+    domain: [medizin:Medikament, medizin:Behandlung]
+    range: [medizin:Krankheit]
+    description: Therapeutische Wirkung gegen Krankheit
+    aliases: [hilft_bei, bekämpft]
+  
+  arbeitet_in:
+    domain: [medizin:Arzt]
+    range: [medizin:Krankenhaus]
+    description: Anstellung in medizinischer Einrichtung
+    aliases: [ist_angestellt_bei]
+  
+  leidet_an:
+    domain: [medizin:Patient]
+    range: [medizin:Krankheit]
+    description: Patient hat eine bestimmte Krankheit
+    aliases: [hat_krankheit, erkrankt_an]
+  
+  verursacht:
+    domain: [medizin:Krankheit]
+    range: [medizin:Krankheit]
+    description: Eine Krankheit führt zu einer anderen
+    aliases: [führt_zu, bewirkt]

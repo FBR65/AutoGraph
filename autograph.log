@@ -138,3 +138,96 @@
 2025-07-15 23:12:04,935 - autograph.storage.neo4j - INFO - Gespeichert: 1 Entitäten, 0 Beziehungen
 2025-07-15 23:12:04,935 - autograph.core.async_pipeline - INFO - Pipeline abgeschlossen in 0.04s: 1 Entitäten, 0 Beziehungen
 2025-07-15 23:12:23,064 - autograph.core.cache - INFO - Alle Caches geleert
+2025-07-16 19:11:33,004 - autograph.ontology.ontology_manager - INFO - OntologyManager initialized in 'offline' mode
+2025-07-16 19:11:33,007 - autograph.ontology.ontology_manager - INFO - Lade Ontologien im Offline-Modus
+2025-07-16 19:11:33,017 - autograph.ontology.custom_ontology_parser - INFO - YAML Ontologie geparst: medizin.yaml
+2025-07-16 19:11:33,018 - autograph.ontology.ontology_graph - INFO - Custom Ontologie 'medizin' gemerged
+2025-07-16 19:11:33,018 - autograph.ontology.ontology_loader - INFO - Custom YAML Ontologie geladen: medizin.yaml
+2025-07-16 19:11:33,024 - autograph.ontology.custom_ontology_parser - INFO - YAML Ontologie geparst: wirtschaft.yaml
+2025-07-16 19:11:33,024 - autograph.ontology.ontology_graph - INFO - Custom Ontologie 'wirtschaft' gemerged
+2025-07-16 19:11:33,024 - autograph.ontology.ontology_loader - INFO - Custom YAML Ontologie geladen: wirtschaft.yaml
+2025-07-16 19:11:33,025 - autograph.ontology.ontology_manager - INFO - Ontologien geladen in 0.02s, 17 Klassen, 16 Relationen
+2025-07-16 19:12:09,837 - autograph.ontology.ontology_manager - INFO - OntologyManager initialized in 'offline' mode
+2025-07-16 19:12:09,838 - autograph.ontology.ontology_manager - INFO - Lade Ontologien im Offline-Modus
+2025-07-16 19:12:09,844 - autograph.ontology.custom_ontology_parser - INFO - YAML Ontologie geparst: medizin.yaml
+2025-07-16 19:12:09,845 - autograph.ontology.ontology_graph - INFO - Custom Ontologie 'medizin' gemerged
+2025-07-16 19:12:09,845 - autograph.ontology.ontology_loader - INFO - Custom YAML Ontologie geladen: medizin.yaml
+2025-07-16 19:12:09,855 - autograph.ontology.custom_ontology_parser - INFO - YAML Ontologie geparst: wirtschaft.yaml
+2025-07-16 19:12:09,855 - autograph.ontology.ontology_graph - INFO - Custom Ontologie 'wirtschaft' gemerged
+2025-07-16 19:12:09,856 - autograph.ontology.ontology_loader - INFO - Custom YAML Ontologie geladen: wirtschaft.yaml
+2025-07-16 19:12:09,857 - autograph.ontology.ontology_manager - INFO - Ontologien geladen in 0.02s, 17 Klassen, 16 Relationen
+2025-07-16 19:12:25,824 - autograph.ontology.ontology_manager - INFO - OntologyManager initialized in 'offline' mode
+2025-07-16 19:12:25,825 - autograph.ontology.ontology_manager - INFO - Lade Ontologien im Offline-Modus
+2025-07-16 19:12:25,839 - autograph.ontology.custom_ontology_parser - INFO - YAML Ontologie geparst: medizin.yaml
+2025-07-16 19:12:25,840 - autograph.ontology.ontology_graph - INFO - Custom Ontologie 'medizin' gemerged
+2025-07-16 19:12:25,840 - autograph.ontology.ontology_loader - INFO - Custom YAML Ontologie geladen: medizin.yaml
+2025-07-16 19:12:25,848 - autograph.ontology.custom_ontology_parser - INFO - YAML Ontologie geparst: wirtschaft.yaml
+2025-07-16 19:12:25,849 - autograph.ontology.ontology_graph - INFO - Custom Ontologie 'wirtschaft' gemerged
+2025-07-16 19:12:25,849 - autograph.ontology.ontology_loader - INFO - Custom YAML Ontologie geladen: wirtschaft.yaml
+2025-07-16 19:12:25,850 - autograph.ontology.ontology_manager - INFO - Ontologien geladen in 0.03s, 17 Klassen, 16 Relationen
+2025-07-16 19:13:06,551 - autograph.ontology.custom_ontology_parser - INFO - Beispiel-Ontologie erstellt: test_example.yaml
+2025-07-16 19:26:37,056 - autograph.ontology.ontology_manager - INFO - OntologyManager initialized in 'offline' mode
+2025-07-16 19:28:49,834 - autograph.ontology.ontology_manager - INFO - OntologyManager initialized in 'offline' mode
+2025-07-16 19:28:49,835 - autograph.processors.entity_linker - INFO - [OK] Ontologie-Integration für Entity Linking aktiviert
+2025-07-16 19:28:49,842 - autograph.processors.entity_linker - INFO - [OK] Custom Katalog geladen: medizin
+2025-07-16 19:28:49,849 - autograph.processors.entity_linker - INFO - [OK] Custom Katalog geladen: wirtschaft
+2025-07-16 19:28:49,849 - autograph.processors.entity_linker - INFO - [LINK] EntityLinker initialisiert (Modus: offline, Kataloge: 4, Threshold: 0.7)
+2025-07-16 19:29:10,264 - autograph.ontology.ontology_manager - INFO - OntologyManager initialized in 'offline' mode
+2025-07-16 19:29:10,264 - autograph.processors.entity_linker - INFO - [OK] Ontologie-Integration für Entity Linking aktiviert
+2025-07-16 19:29:10,270 - autograph.processors.entity_linker - INFO - [OK] Custom Katalog geladen: medizin
+2025-07-16 19:29:10,275 - autograph.processors.entity_linker - INFO - [OK] Custom Katalog geladen: wirtschaft
+2025-07-16 19:29:10,275 - autograph.processors.entity_linker - INFO - [LINK] EntityLinker initialisiert (Modus: offline, Kataloge: 4, Threshold: 0.7)
+2025-07-16 19:29:10,276 - autograph.ontology.ontology_manager - INFO - Lade Ontologien im Offline-Modus
+2025-07-16 19:29:10,282 - autograph.ontology.custom_ontology_parser - INFO - YAML Ontologie geparst: medizin.yaml
+2025-07-16 19:29:10,282 - autograph.ontology.ontology_graph - INFO - Custom Ontologie 'medizin' gemerged
+2025-07-16 19:29:10,282 - autograph.ontology.ontology_loader - INFO - Custom YAML Ontologie geladen: medizin.yaml
+2025-07-16 19:29:10,287 - autograph.ontology.custom_ontology_parser - INFO - YAML Ontologie geparst: wirtschaft.yaml
+2025-07-16 19:29:10,288 - autograph.ontology.ontology_graph - INFO - Custom Ontologie 'wirtschaft' gemerged
+2025-07-16 19:29:10,288 - autograph.ontology.ontology_loader - INFO - Custom YAML Ontologie geladen: wirtschaft.yaml
+2025-07-16 19:29:10,288 - autograph.ontology.ontology_manager - INFO - Ontologien geladen in 0.01s, 17 Klassen, 16 Relationen
+2025-07-16 19:29:10,289 - autograph.processors.entity_linker - INFO - [LINK] Entity Linking abgeschlossen: 1/1 verknüpft (0 high-confidence)
+2025-07-16 19:29:28,393 - autograph.ontology.ontology_manager - INFO - OntologyManager initialized in 'offline' mode
+2025-07-16 19:29:28,393 - autograph.processors.entity_linker - INFO - [OK] Ontologie-Integration für Entity Linking aktiviert
+2025-07-16 19:29:28,399 - autograph.processors.entity_linker - INFO - [OK] Custom Katalog geladen: medizin
+2025-07-16 19:29:28,404 - autograph.processors.entity_linker - INFO - [OK] Custom Katalog geladen: wirtschaft
+2025-07-16 19:29:28,405 - autograph.processors.entity_linker - INFO - [LINK] EntityLinker initialisiert (Modus: offline, Kataloge: 4, Threshold: 0.7)
+2025-07-16 19:29:28,405 - autograph.ontology.ontology_manager - INFO - Lade Ontologien im Offline-Modus
+2025-07-16 19:29:28,413 - autograph.ontology.custom_ontology_parser - INFO - YAML Ontologie geparst: medizin.yaml
+2025-07-16 19:29:28,414 - autograph.ontology.ontology_graph - INFO - Custom Ontologie 'medizin' gemerged
+2025-07-16 19:29:28,414 - autograph.ontology.ontology_loader - INFO - Custom YAML Ontologie geladen: medizin.yaml
+2025-07-16 19:29:28,419 - autograph.ontology.custom_ontology_parser - INFO - YAML Ontologie geparst: wirtschaft.yaml
+2025-07-16 19:29:28,419 - autograph.ontology.ontology_graph - INFO - Custom Ontologie 'wirtschaft' gemerged
+2025-07-16 19:29:28,419 - autograph.ontology.ontology_loader - INFO - Custom YAML Ontologie geladen: wirtschaft.yaml
+2025-07-16 19:29:28,420 - autograph.ontology.ontology_manager - INFO - Ontologien geladen in 0.02s, 17 Klassen, 16 Relationen
+2025-07-16 19:29:28,420 - autograph.processors.entity_linker - INFO - [LINK] Entity Linking abgeschlossen: 1/1 verknüpft (0 high-confidence)
+2025-07-16 19:30:02,459 - autograph.ontology.ontology_manager - INFO - OntologyManager initialized in 'offline' mode
+2025-07-16 19:30:02,459 - autograph.processors.entity_linker - INFO - [OK] Ontologie-Integration für Entity Linking aktiviert
+2025-07-16 19:30:02,467 - autograph.processors.entity_linker - INFO - [OK] Custom Katalog geladen: medizin
+2025-07-16 19:30:02,477 - autograph.processors.entity_linker - INFO - [OK] Custom Katalog geladen: wirtschaft
+2025-07-16 19:30:02,478 - autograph.processors.entity_linker - INFO - [LINK] EntityLinker initialisiert (Modus: offline, Kataloge: 4, Threshold: 0.5)
+2025-07-16 19:30:02,478 - autograph.ontology.ontology_manager - INFO - Lade Ontologien im Offline-Modus
+2025-07-16 19:30:02,485 - autograph.ontology.custom_ontology_parser - INFO - YAML Ontologie geparst: medizin.yaml
+2025-07-16 19:30:02,485 - autograph.ontology.ontology_graph - INFO - Custom Ontologie 'medizin' gemerged
+2025-07-16 19:30:02,485 - autograph.ontology.ontology_loader - INFO - Custom YAML Ontologie geladen: medizin.yaml
+2025-07-16 19:30:02,490 - autograph.ontology.custom_ontology_parser - INFO - YAML Ontologie geparst: wirtschaft.yaml
+2025-07-16 19:30:02,490 - autograph.ontology.ontology_graph - INFO - Custom Ontologie 'wirtschaft' gemerged
+2025-07-16 19:30:02,490 - autograph.ontology.ontology_loader - INFO - Custom YAML Ontologie geladen: wirtschaft.yaml
+2025-07-16 19:30:02,491 - autograph.ontology.ontology_manager - INFO - Ontologien geladen in 0.01s, 17 Klassen, 16 Relationen
+2025-07-16 19:30:02,492 - autograph.processors.entity_linker - INFO - [LINK] Entity Linking abgeschlossen: 1/1 verknüpft (0 high-confidence)
+2025-07-16 19:32:01,794 - autograph.ontology.ontology_manager - INFO - OntologyManager initialized in 'offline' mode
+2025-07-16 19:32:01,794 - autograph.processors.entity_linker - INFO - [OK] Ontologie-Integration für Entity Linking aktiviert
+2025-07-16 19:32:01,800 - autograph.processors.entity_linker - INFO - [OK] Custom Katalog geladen: medizin
+2025-07-16 19:32:01,804 - autograph.processors.entity_linker - INFO - [OK] Custom Katalog geladen: wirtschaft
+2025-07-16 19:32:01,804 - autograph.processors.entity_linker - INFO - [LINK] EntityLinker initialisiert (Modus: offline, Kataloge: 4, Threshold: 0.5)
+2025-07-16 19:32:01,804 - autograph.processors.entity_linker - INFO - [LINK] Entity Linking abgeschlossen: 1/1 verknüpft (1 high-confidence)
+2025-07-16 19:33:33,049 - autograph.ontology.ontology_manager - INFO - OntologyManager initialized in 'offline' mode
+2025-07-16 19:33:33,049 - autograph.processors.entity_linker - INFO - [OK] Ontologie-Integration für Entity Linking aktiviert
+2025-07-16 19:33:33,055 - autograph.processors.entity_linker - INFO - [OK] Custom Katalog geladen: medizin
+2025-07-16 19:33:33,060 - autograph.processors.entity_linker - INFO - [OK] Custom Katalog geladen: wirtschaft
+2025-07-16 19:33:33,060 - autograph.processors.entity_linker - INFO - [LINK] EntityLinker initialisiert (Modus: offline, Kataloge: 4, Threshold: 0.5)
+2025-07-16 19:34:47,461 - autograph.ontology.ontology_manager - INFO - OntologyManager initialized in 'offline' mode
+2025-07-16 19:34:47,461 - autograph.processors.entity_linker - INFO - [OK] Ontologie-Integration für Entity Linking aktiviert
+2025-07-16 19:34:47,467 - autograph.processors.entity_linker - INFO - [OK] Custom Katalog geladen: medizin
+2025-07-16 19:34:47,473 - autograph.processors.entity_linker - INFO - [OK] Custom Katalog geladen: wirtschaft
+2025-07-16 19:34:47,474 - autograph.processors.entity_linker - INFO - [LINK] EntityLinker initialisiert (Modus: offline, Kataloge: 4, Threshold: 0.5)
+2025-07-16 19:34:47,474 - autograph.processors.entity_linker - INFO - [LINK] Entity Linking abgeschlossen: 1/1 verknüpft (1 high-confidence)

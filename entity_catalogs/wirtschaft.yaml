@@ -1,0 +1,96 @@
+catalog_info:
+  domain: wirtschaft
+  created: "2025-01-16T12:00:00"
+  description: "Wirtschafts-Entitäten für Enterprise Entity Linking"
+  version: "1.0"
+
+entities:
+  BMW:
+    canonical_name: "BMW AG"
+    aliases: ["BMW", "Bayerische Motoren Werke", "BMW Group", "BMW AG"]
+    type: "ORG"
+    domain: "wirtschaft"
+    description: "Deutscher Premium-Automobilhersteller"
+    uri: "http://autograph.custom/wirtschaft/bmw_ag"
+    properties:
+      industry: "Automotive"
+      founded: "1916"
+      headquarters: "München"
+      employees: "120000"
+      revenue: "142.6B EUR"
+      stock_symbol: "BMW"
+
+  Siemens:
+    canonical_name: "Siemens AG"
+    aliases: ["Siemens", "Siemens AG", "Siemens Group"]
+    type: "ORG"
+    domain: "wirtschaft"
+    description: "Deutscher Technologie- und Industriekonzern"
+    uri: "http://autograph.custom/wirtschaft/siemens_ag"
+    properties:
+      industry: "Technology"
+      founded: "1847"
+      headquarters: "München"
+      employees: "300000"
+      revenue: "72.0B EUR"
+      stock_symbol: "SIE"
+
+  SAP:
+    canonical_name: "SAP SE"
+    aliases: ["SAP", "SAP SE", "SAP AG"]
+    type: "ORG"
+    domain: "wirtschaft"
+    description: "Deutscher Software-Konzern"
+    uri: "http://autograph.custom/wirtschaft/sap_se"
+    properties:
+      industry: "Software"
+      founded: "1972"
+      headquarters: "Walldorf"
+      employees: "110000"
+      revenue: "31.0B EUR"
+      stock_symbol: "SAP"
+
+  Deutsche_Bank:
+    canonical_name: "Deutsche Bank AG"
+    aliases: ["Deutsche Bank", "Deutsche Bank AG", "DB"]
+    type: "ORG"
+    domain: "wirtschaft"
+    description: "Deutsche Großbank"
+    uri: "http://autograph.custom/wirtschaft/deutsche_bank"
+    properties:
+      industry: "Banking"
+      founded: "1870"
+      headquarters: "Frankfurt am Main"
+      employees: "82000"
+      revenue: "25.8B EUR"
+      stock_symbol: "DBK"
+
+  Volkswagen:
+    canonical_name: "Volkswagen AG"
+    aliases: ["Volkswagen", "VW", "Volkswagen AG", "VW Group"]
+    type: "ORG"
+    domain: "wirtschaft"
+    description: "Deutscher Automobilkonzern"
+    uri: "http://autograph.custom/wirtschaft/volkswagen"
+    properties:
+      industry: "Automotive"
+      founded: "1937"
+      headquarters: "Wolfsburg"
+      employees: "650000"
+      revenue: "279.2B EUR"
+      stock_symbol: "VOW"
+
+  BASF:
+    canonical_name: "BASF SE"
+    aliases: ["BASF", "BASF SE", "BASF AG"]
+    type: "ORG"
+    domain: "wirtschaft"
+    description: "Deutscher Chemiekonzern"
+    uri: "http://autograph.custom/wirtschaft/basf"
+    properties:
+      industry: "Chemicals"
+      founded: "1865"
+      headquarters: "Ludwigshafen"
+      employees: "110000"
+      revenue: "87.3B EUR"
+      stock_symbol: "BAS"

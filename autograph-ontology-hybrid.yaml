@@ -1,0 +1,60 @@
+project_name: "autograph-hybrid"
+description: "AutoGraph mit Hybrid-Ontologien für Enterprise-Umgebungen"
+
+neo4j:
+  uri: "bolt://localhost:7687"
+  username: "neo4j"
+  password: "your-password"
+
+llm:
+  base_url: "http://localhost:11434/v1"
+  api_key: "not-needed"
+  model: "qwen2.5:latest"
+
+extractor:
+  text_chunking: true
+  chunk_size: 1000
+
+processor:
+  ner_model: "de_core_news_lg"
+  ner_confidence_threshold: 0.8
+  re_confidence_threshold: 0.6
+
+# Ontologie: Hybrid-Modus mit kontrollierten Online-Zugriffen
+ontology:
+  mode: "hybrid"                               # Lokale + Online mit Kontrolle
+  online_fallback: true                        # Online nur als Fallback
+  cache_duration: "7d"                         # Cache für 7 Tage gültig
+  internet_timeout: 10                         # Längerer Timeout für Stabilität
+  
+  # Pfade
+  local_ontologies_dir: "./ontologies/"
+  custom_ontologies_dir: "./custom_ontologies/"
+  cache_dir: "./cache/"
+  
+  # Hybride Quellen-Strategie
+  sources:
+    - type: "custom_yaml"                      # 1. Priorität: Firmen-Ontologien
+      path: "./custom_ontologies/"
+      priority: 1
+      
+    - type: "cached_schema_org"                # 2. Priorität: Gecachte Standards
+      cache_path: "./cache/schema_org.ttl"
+      priority: 2
+      cache_duration: "7d"
+      
+    - type: "local_rdf"                        # 3. Priorität: Lokale Fallbacks
+      path: "./ontologies/"
+      priority: 3
+      
+    - type: "online_schema_org"                # 4. Priorität: Online nur bei Bedarf
+      priority: 4
+      cache: true                              # Automatisches Caching
+      timeout: 10
+
+# Features für Enterprise
+experimental_features:
+  ontology_validation: true
+  semantic_enrichment: true
+  audit_logging: true                          # Audit-Log für Compliance
+  source_tracking: true                        # Nachverfolgung der Datenquellen

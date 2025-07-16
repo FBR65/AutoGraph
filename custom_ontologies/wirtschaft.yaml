@@ -1,0 +1,71 @@
+namespace: wirtschaft
+namespace_uri: http://autograph.custom/wirtschaft/
+version: 1.0
+description: Wirtschafts-Ontologie für AutoGraph
+
+classes:
+  Unternehmen:
+    parent: schema:Organization
+    description: Wirtschaftsunternehmen oder Firma
+    aliases: [Firma, Corporation, Company]
+    properties: [branche, umsatz, mitarbeiteranzahl, boersenwert]
+  
+  Führungskraft:
+    parent: schema:Person
+    description: Person in Führungsposition
+    aliases: [CEO, Manager, Geschäftsführer, Vorstand]
+    properties: [position, verantwortungsbereich, gehalt]
+  
+  Investor:
+    parent: schema:Person
+    description: Person oder Entität die investiert
+    aliases: [Anleger, Kapitalgeber]
+    properties: [portfolio, investitionssumme]
+  
+  Startup:
+    parent: wirtschaft:Unternehmen
+    description: Junges, innovatives Unternehmen
+    aliases: [Neugründung]
+    properties: [gründungsjahr, finanzierungsrunde, bewertung]
+  
+  Projekt:
+    parent: schema:CreativeWork
+    description: Geschäftsprojekt oder Initiative
+    properties: [budget, deadline, status, roi]
+
+relations:
+  investiert_in:
+    domain: [wirtschaft:Investor, wirtschaft:Unternehmen]
+    range: [wirtschaft:Unternehmen, wirtschaft:Startup, wirtschaft:Projekt]
+    description: Kapitalanlage in Unternehmen oder Projekt
+    aliases: [finanziert, beteiligt_sich_an]
+  
+  übernimmt:
+    domain: [wirtschaft:Unternehmen]
+    range: [wirtschaft:Unternehmen, wirtschaft:Startup]
+    description: Übernahme oder Akquisition eines anderen Unternehmens
+    aliases: [akquiriert, kauft]
+  
+  kooperiert_mit:
+    domain: [wirtschaft:Unternehmen]
+    range: [wirtschaft:Unternehmen]
+    description: Geschäftliche Zusammenarbeit zwischen Unternehmen
+    aliases: [arbeitet_zusammen_mit, partner_von]
+  
+  konkurriert_mit:
+    domain: [wirtschaft:Unternehmen]
+    range: [wirtschaft:Unternehmen]
+    description: Geschäftliche Konkurrenz
+    aliases: [steht_im_wettbewerb_mit]
+  
+  leitet:
+    domain: [wirtschaft:Führungskraft]
+    range: [wirtschaft:Unternehmen, wirtschaft:Projekt]
+    description: Führungsverantwortung für Unternehmen oder Projekt
+    aliases: [führt, ist_chef_von]
+  
+  beliefert:
+    domain: [wirtschaft:Unternehmen]
+    range: [wirtschaft:Unternehmen]
+    description: Lieferbeziehung zwischen Unternehmen
+    aliases: [liefert_an, versorgt]

@@ -1,0 +1,46 @@
+project_name: "autograph-offline"
+description: "AutoGraph mit Offline-Ontologien für Air-Gapped Systeme"
+
+neo4j:
+  uri: "bolt://localhost:7687"
+  username: "neo4j"
+  password: "your-password"
+
+llm:
+  base_url: "http://localhost:11434/v1"  # Ollama lokal
+  api_key: "not-needed"
+  model: "qwen2.5:latest"
+
+extractor:
+  text_chunking: true
+  chunk_size: 1000
+
+processor:
+  ner_model: "de_core_news_lg"
+  ner_confidence_threshold: 0.8
+  re_confidence_threshold: 0.6
+
+# Ontologie: Offline-Only Modus für maximale Sicherheit
+ontology:
+  mode: "offline"                              # Nur lokale Quellen
+  online_fallback: false                       # Keine Internet-Verbindungen
+  internet_timeout: 1                          # Kurzer Timeout
+  
+  # Pfade zu lokalen Ontologien
+  local_ontologies_dir: "./ontologies/"       # Vorgefertigte Ontologien
+  custom_ontologies_dir: "./custom_ontologies/" # Firmen-spezifische Ontologien
+  cache_dir: "./cache/"                        # Cache (falls vorhanden)
+  
+  # Explizite Quellen-Definition
+  sources:
+    - type: "custom_yaml"
+      path: "./custom_ontologies/"
+      priority: 1                              # Höchste Priorität für Custom
+    - type: "local_rdf" 
+      path: "./ontologies/"
+      priority: 2                              # Lokale Standard-Ontologien
+
+# Experimentelle Features
+experimental_features:
+  ontology_validation: true                    # Ontologie-basierte Validierung
+  semantic_enrichment: true                    # Automatische Wissensanreicherung

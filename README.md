@@ -244,7 +244,7 @@ llm:
 #### 1. **Rule-Based RelationExtractor** (Basis)
 - **NERProcessor**: Named Entity Recognition mit SpaCy
 - **RelationExtractor**: Erweiterte Beziehungsextraktion mit syntaktischen Mustern
-- **EntityLinker**: (geplant) Entity Linking
+- **EntityLinker**: ✅ **OFFLINE-FIRST IMPLEMENTIERT!**
 
 #### 2. **🤖 ML RelationExtractor** ✅ **NEU IMPLEMENTIERT!**
 - **BERT-basiert**: deepset/gbert-base für deutsche Texte
@@ -344,17 +344,247 @@ uv run mypy src/
 - [x] OpenAI-kompatible LLM Integration (Ollama, OpenAI, LocalAI)
 - [x] CLI mit interaktivem Menü
 - [x] Datenbankmanagement (Anzeigen, Löschen, Schema-Erstellung)
+- [x] Performance Optimierung
+- [x] TableExtractor für CSV/Excel
+- [x] REST API Interface
+- [x] Advanced Relation Extraction mit ML-Modellen
+- [x] Ontologie-Integration
+- [x] Entity Linking
 
 **🔄 In Entwicklung/Geplant:**
 - [ ] Web Scraping Extraktor
-- [x] **Advanced Relation Extraction mit ML-Modellen** ✅ **IMPLEMENTIERT!**
-- [ ] Ontologie-Integration
 - [ ] Multi-Language Support
-- [ ] REST API Interface
 - [ ] Graph Visualisierung (Neo4j Browser, Gephi Export)
-- [ ] Performance Optimierung
-- [ ] TableExtractor für CSV/Excel
-- [ ] Entity Linking
+
+---
+
+## 🧠 Ontologie-Integration - ✅ IMPLEMENTIERT
+
+Das **Offline-First Ontologie-System** ist vollständig implementiert und produktionsbereit!
+
+### 🎯 Ontologie-Features
+
+**Kernkomponenten:**
+- **🔒 Offline-First**: Funktioniert ohne Internet (Air-Gapped Systems)
+- **🔄 Hybrid-Modus**: Lokale + Online mit Caching (Enterprise)
+- **🌐 Online-Modus**: Vollständige Online-Integration (Cloud/Development)
+- **📝 Custom YAML**: Einfache Domain-spezifische Ontologien
+- **🏢 Enterprise-Ready**: Compliance und Sicherheit optimiert
+
+### 🚀 Ontologie-Modi
+
+#### 1. **🔒 Offline-Modus (Air-Gapped Systems)**
+```bash
+# Nur lokale/custom Ontologien - maximale Sicherheit
+uv run autograph ontology status --mode offline
+```
+**Features:**
+- ✅ Keine Internet-Verbindungen
+- ✅ Custom YAML-Ontologien (Wirtschaft, Medizin)
+- ✅ Lokale RDF/OWL-Dateien
+- ✅ Compliance-freundlich (DSGVO, SOC2, ISO 27001)
+
+#### 2. **🔄 Hybrid-Modus (Enterprise)**
+```bash
+# Lokale Priorität + Online-Fallback mit Caching
+uv run autograph ontology status --mode hybrid
+```
+**Features:**
+- ✅ Custom-Ontologien haben höchste Priorität
+- ✅ Automatisches Caching von Online-Quellen
+- ✅ Kontrollierte Online-Zugriffe (Schema.org, DBpedia)
+- ✅ Offline-Fallback bei Internet-Ausfall
+
+#### 3. **🌐 Online-Modus (Cloud/Development)**
+```bash
+# Bevorzugt Online-Quellen für maximale Abdeckung
+uv run autograph ontology status --mode online
+```
+**Features:**
+- ✅ Aktuelle Schema.org & DBpedia-Integration
+- ✅ Automatische Updates und Caching
+- ✅ Linked Data Export & SPARQL-Endpoint
+- ✅ Wikidata-Integration
+
+### 💻 CLI-Kommandos
+
+#### **Ontologie-Status prüfen**
+```bash
+# Zeigt geladene Ontologien, Klassen, Relationen
+uv run autograph ontology status --mode offline
+
+# Output:
+# [BRAIN] Ontologie-Status
+# Modus: offline
+# Ladezeit: 0.02s
+# Klassen: 17
+# Relationen: 16
+# Namespaces: schema, dbpedia, medizin, wirtschaft
+```
+
+#### **Entity-Mapping testen**
+```bash
+# Mappt Entitäten auf Ontologie-Konzepte
+uv run autograph ontology map-entity "BMW" "ORG" --domain wirtschaft
+
+# Output:
+# [TARGET] Entity-Mapping für 'BMW'
+# Domain: wirtschaft
+# Konfidenz: 0.90
+# [LIST] Gemappte Klassen:
+#   * wirtschaft:Unternehmen
+#   * schema:Organization
+```
+
+#### **Relation-Mapping testen**
+```bash
+# Mappt Relationen auf Ontologie-Properties
+uv run autograph ontology map-relation "investiert_in" --domain wirtschaft
+
+# Output:
+# [LINK] Relation-Mapping für 'investiert_in'
+# Domain: wirtschaft
+# Konfidenz: 0.90
+# [LIST] Gemappte Properties:
+#   * wirtschaft:investiert_in
+#   * wirtschaft:invests
+```
+
+#### **Custom-Ontologie erstellen**
+```bash
+# Erstellt Beispiel-Ontologie für Domain
+uv run autograph ontology create-example "meine_domain" "./meine_ontologie.yaml"
+```
+
+### 📁 Custom YAML-Ontologien
+
+#### **Wirtschafts-Ontologie (custom_ontologies/wirtschaft.yaml)**
+```yaml
+namespace: wirtschaft
+namespace_uri: http://autograph.custom/wirtschaft/
+
+classes:
+  Unternehmen:
+    parent: schema:Organization
+    description: Wirtschaftsunternehmen oder Firma
+    aliases: [Firma, Corporation, Company]
+  
+  Führungskraft:
+    parent: schema:Person
+    description: Person in Führungsposition
+    aliases: [CEO, Manager, Geschäftsführer]
+
+relations:
+  investiert_in:
+    domain: [wirtschaft:Investor, wirtschaft:Unternehmen]
+    range: [wirtschaft:Unternehmen, wirtschaft:Startup]
+    description: Kapitalanlage in Unternehmen
+    aliases: [finanziert, beteiligt_sich_an]
+```
+
+#### **Medizin-Ontologie (custom_ontologies/medizin.yaml)**
+```yaml
+namespace: medizin
+namespace_uri: http://autograph.custom/medizin/
+
+classes:
+  Arzt:
+    parent: schema:Person
+    description: Medizinischer Fachperson
+    aliases: [Doktor, Mediziner, Physician]
+  
+  Patient:
+    parent: schema:Person
+    description: Person die medizinische Behandlung erhält
+
+relations:
+  behandelt:
+    domain: [medizin:Arzt]
+    range: [medizin:Patient, medizin:Krankheit]
+    description: Medizinische Behandlung
+    aliases: [therapiert, versorgt]
+```
+
+### ⚙️ Konfiguration
+
+#### **Offline-Konfiguration (autograph-ontology-offline.yaml)**
+```yaml
+ontology:
+  mode: "offline"                              # Nur lokale Quellen
+  online_fallback: false                       # Keine Internet-Verbindungen
+  local_ontologies_dir: "./ontologies/"       # Standard-Ontologien
+  custom_ontologies_dir: "./custom_ontologies/" # Firmen-Ontologien
+  
+  sources:
+    - type: "custom_yaml"
+      path: "./custom_ontologies/"
+      priority: 1                              # Höchste Priorität
+    - type: "local_rdf" 
+      path: "./ontologies/"
+      priority: 2
+```
+
+#### **Hybrid-Konfiguration (autograph-ontology-hybrid.yaml)**
+```yaml
+ontology:
+  mode: "hybrid"                               # Lokale + Online
+  online_fallback: true                        # Online als Fallback
+  cache_duration: "7d"                         # Cache für 7 Tage
+  
+  sources:
+    - type: "custom_yaml"                      # 1. Custom-Ontologien
+      priority: 1
+    - type: "cached_schema_org"                # 2. Gecachte Standards
+      priority: 2
+    - type: "online_schema_org"                # 3. Online-Fallback
+      priority: 3
+```
+
+### 🔧 Integration in Code
+
+```python
+from autograph.ontology import OntologyManager
+
+# Lade Ontologie-Konfiguration
+config = {
+    'ontology': {
+        'mode': 'offline',  # oder 'hybrid', 'online'
+        'custom_ontologies_dir': './custom_ontologies/'
+    }
+}
+
+ontology_manager = OntologyManager(config)
+
+# Entity-Mapping
+entity_mapping = ontology_manager.map_entity("BMW", "ORG", "wirtschaft")
+# Returns: {'mapped_classes': ['wirtschaft:Unternehmen', 'schema:Organization'], 'confidence': 0.9}
+
+# Relation-Mapping
+relation_mapping = ontology_manager.map_relation("investiert_in", "wirtschaft")
+# Returns: {'mapped_properties': ['wirtschaft:investiert_in'], 'confidence': 0.9}
+
+# Triple-Validierung
+is_valid = ontology_manager.validate_triple(
+    "wirtschaft:Investor", 
+    "wirtschaft:investiert_in", 
+    "wirtschaft:Startup"
+)
+# Returns: True
+```
+
+### 🏢 Enterprise-Benefits
+
+**Sicherheit & Compliance:**
+- ✅ **Air-Gapped Support**: Funktioniert ohne Internet
+- ✅ **Audit-Trail**: Nachverfolgung aller Datenquellen
+- ✅ **DSGVO-konform**: Keine ungewollten Online-Verbindungen
+- ✅ **SOC2/ISO 27001**: Kontrollierte Informationsflüsse
+
+**Flexibilität:**
+- ✅ **Domain-spezifisch**: Firmen-eigene Ontologien
+- ✅ **Graduelle Migration**: Von offline zu hybrid zu online
+- ✅ **Standard-Integration**: Schema.org, DBpedia, Wikidata
+- ✅ **Performance**: Lokale Geschwindigkeit, 0.02s Ladezeit
 
 ---
 
@@ -476,6 +706,342 @@ uv run autograph run text.txt --processor hybrid --domain medizin
 - **Confidence Range**: 0.595-0.707 (realistisch hoch)
 - **Entity Detection**: Automatisch ohne Eingabe
 - **Memory**: GPU/CPU optimiert
+
+---
+
+## 🎯 Implementation Summary
+
+**AutoGraph jetzt mit vollständiger ML + Ontologie Integration!**
+
+### ✅ **Produktionsbereit:**
+
+1. **🤖 ML Relation Extraction**
+   - T-Systems German RoBERTa + BERT-basiert
+   - 6 Relationen in 5.93s, Konfidenz 0.595-0.707
+   - Automatische Entity-Erkennung
+
+2. **🧠 Ontologie-Integration**  
+   - Offline-First für Air-Gapped Systems
+   - Custom YAML-Ontologien (Wirtschaft, Medizin)
+   - Enterprise-ready mit Compliance-Support
+
+3. **🔄 Hybrid-Ensemble**
+   - Best-of-Both: ML + Rule-based
+   - Performance-Monitoring & Auto-Optimierung
+   - Gewichtbare Algorithmus-Kombination
+
+### 🚀 **Schnellstart:**
+
+```bash
+# 1. ML Relation Extraction testen
+uv run autograph run text.txt --processor ml --domain wirtschaft
+
+# 2. Ontologie-Status prüfen  
+uv run autograph ontology status --mode offline
+
+# 3. Entity-Mapping testen
+uv run autograph ontology map-entity "BMW" "ORG" --domain wirtschaft
+
+# 4. Hybrid-Pipeline mit allem
+uv run autograph run text.txt --processor hybrid --domain medizin
+```
+
+**AutoGraph ist jetzt enterprise-ready für Production!** 🎉
+
+---
+
+## 🔗 Entity Linking - ✅ IMPLEMENTIERT
+
+Das **Offline-First Entity Linking System** ist vollständig implementiert und produktionsbereit!
+
+### 🎯 Entity Linking Features
+
+**Kernkomponenten:**
+- **🔒 Offline-First**: Funktioniert ohne Internet (Air-Gapped Systems)
+- **🔄 Hybrid-Modus**: Lokale + Online mit Caching (Enterprise)
+- **🌐 Online-Modus**: Vollständige Online-Integration (Cloud/Development)
+- **📝 Custom Entity-Kataloge**: YAML-basierte firmen-spezifische Entitäten
+- **🏢 Enterprise-Ready**: Compliance und Sicherheit optimiert
+
+### 🚀 Entity Linking Modi
+
+#### 1. **🔒 Offline-Modus (Air-Gapped Systems)**
+```bash
+# Nur lokale/custom Entity-Kataloge - maximale Sicherheit
+uv run autograph entity-linking el-status --mode offline
+```
+**Features:**
+- ✅ Keine Internet-Verbindungen
+- ✅ Custom YAML-Kataloge (Wirtschaft, Medizin)
+- ✅ Lokale Entity-Datenbanken
+- ✅ Compliance-freundlich (DSGVO, SOC2, ISO 27001)
+
+#### 2. **🔄 Hybrid-Modus (Enterprise)**
+```bash
+# Lokale Priorität + Online-Fallback mit Caching
+uv run autograph entity-linking el-status --mode hybrid
+```
+**Features:**
+- ✅ Custom-Kataloge haben höchste Priorität
+- ✅ Automatisches Caching von Online-Quellen
+- ✅ Kontrollierte Online-Zugriffe (Wikidata, DBpedia)
+- ✅ Offline-Fallback bei Internet-Ausfall
+
+#### 3. **🌐 Online-Modus (Cloud/Development)**
+```bash
+# Bevorzugt Online-Quellen für maximale Abdeckung
+uv run autograph entity-linking el-status --mode online
+```
+**Features:**
+- ✅ Aktuelle Wikidata & DBpedia-Integration
+- ✅ Automatische Updates und Caching
+- ✅ Linked Data Export & URI-Mapping
+- ✅ Wikipedia-Integration
+
+### 💻 CLI-Kommandos
+
+#### **Entity Linking Status prüfen**
+```bash
+# Zeigt geladene Entity-Kataloge
+uv run autograph entity-linking el-status --mode offline
+
+# Output:
+# [LINK] Entity Linking Status
+# Modus: offline
+# Confidence Threshold: 0.5
+# Gesamt-Entitäten in Katalogen: 16
+# [LIST] Verfügbare Kataloge:
+#   * custom_medizin: 6 Entitäten
+#   * custom_wirtschaft: 6 Entitäten
+#   * builtin_organizations: 2 Entitäten
+#   * builtin_locations: 2 Entitäten
+```
+
+#### **Entity Linking testen**
+```bash
+# Verknüpft Entität mit Wissensdatenbank
+uv run autograph entity-linking link-entity "Aspirin" "DRUG" --domain medizin --context "Aspirin ist ein Schmerzmittel" --mode offline
+
+# Output:
+# [TARGET] Entity Linking für 'Aspirin'
+# Typ: DRUG
+# Domain: medizin
+# Kontext: Aspirin ist ein Schmerzmittel
+# [SUCCESS] Erfolgreich verknüpft!
+# Kanonischer Name: Acetylsalicylsäure
+# URI: http://autograph.custom/medizin/aspirin
+# Beschreibung: Schmerzmittel und Blutverdünner
+# Konfidenz: 1.000
+# Match-Typ: exact
+# Katalog: custom_medizin
+# [LIST] Eigenschaften:
+#   * drug_class: NSAID
+#   * atc_code: N02BA01
+#   * indication: Schmerzen, Fieber, Entzündung
+```
+
+#### **Custom Entity-Katalog erstellen**
+```bash
+# Erstellt Beispiel-Katalog für Domäne
+uv run autograph entity-linking create-catalog "meine_domain" "./meine_entitaeten.yaml"
+```
+
+### 📁 Custom Entity-Kataloge
+
+#### **Wirtschafts-Katalog (entity_catalogs/wirtschaft.yaml)**
+```yaml
+catalog_info:
+  domain: wirtschaft
+  description: "Wirtschafts-Entitäten für Enterprise Entity Linking"
+
+entities:
+  BMW:
+    canonical_name: "BMW AG"
+    aliases: ["BMW", "Bayerische Motoren Werke", "BMW Group"]
+    type: "ORG"
+    domain: "wirtschaft"
+    description: "Deutscher Premium-Automobilhersteller"
+    uri: "http://autograph.custom/wirtschaft/bmw_ag"
+    properties:
+      industry: "Automotive"
+      founded: "1916"
+      headquarters: "München"
+      employees: "120000"
+
+  Siemens:
+    canonical_name: "Siemens AG"
+    aliases: ["Siemens", "Siemens Corporation"]
+    type: "ORG"
+    domain: "wirtschaft"
+    description: "Deutsches Technologie-Unternehmen"
+    uri: "http://autograph.custom/wirtschaft/siemens_ag"
+    properties:
+      industry: "Technology"
+      founded: "1847"
+      headquarters: "München"
+```
+
+#### **Medizin-Katalog (entity_catalogs/medizin.yaml)**
+```yaml
+entities:
+  Aspirin:
+    canonical_name: "Acetylsalicylsäure"
+    aliases: ["Aspirin", "ASS", "Acetylsalicylsäure"]
+    type: "DRUG"
+    domain: "medizin"
+    description: "Schmerzmittel und Blutverdünner"
+    uri: "http://autograph.custom/medizin/aspirin"
+    properties:
+      drug_class: "NSAID"
+      atc_code: "N02BA01"
+      indication: "Schmerzen, Fieber, Entzündung"
+      contraindications: "Allergien, Blutungsneigung"
+
+  Ibuprofen:
+    canonical_name: "Ibuprofen"
+    aliases: ["Ibuprofen", "IBU"]
+    type: "DRUG"
+    domain: "medizin"
+    description: "Entzündungshemmendes Schmerzmittel"
+    uri: "http://autograph.custom/medizin/ibuprofen"
+    properties:
+      drug_class: "NSAID"
+      atc_code: "M01AE01"
+      indication: "Schmerzen, Entzündung, Fieber"
+```
+
+### 🔧 Integration in Code
+
+```python
+from autograph.processors.entity_linker import EntityLinker
+
+# Entity Linker-Konfiguration
+config = {
+    'entity_linking_mode': 'offline',  # oder 'hybrid', 'online'
+    'entity_linking_confidence_threshold': 0.5,
+    'custom_entity_catalogs_dir': './entity_catalogs/'
+}
+
+linker = EntityLinker(config)
+
+# Test-Daten
+test_data = [{
+    'entities': [{'text': 'Aspirin', 'label': 'DRUG', 'type': 'DRUG'}],
+    'domain': 'medizin',
+    'content': 'Aspirin ist ein Schmerzmittel'
+}]
+
+result = linker.process(test_data)
+linked_entity = result['entities'][0]
+
+if linked_entity.get('linked', False):
+    print(f"Verknüpft: {linked_entity['canonical_name']}")
+    print(f"URI: {linked_entity['uri']}")
+    print(f"Konfidenz: {linked_entity['confidence']:.3f}")
+```
+
+### 🏢 Enterprise-Benefits
+
+**Sicherheit & Compliance:**
+- ✅ **Air-Gapped Support**: Funktioniert ohne Internet
+- ✅ **Custom Entity-Kataloge**: Firmen-spezifische Entitäten
+- ✅ **DSGVO-konform**: Keine ungewollten Online-Verbindungen
+- ✅ **SOC2/ISO 27001**: Kontrollierte Datenflüsse
+
+**Disambiguation & Qualität:**
+- ✅ **Kontext-basiert**: Mehrdeutigkeitsauflösung durch Kontext
+- ✅ **Domain-spezifisch**: Medizin, Wirtschaft, etc.
+- ✅ **Confidence-Scores**: Verlässlichkeitsbewertung
+- ✅ **Ontologie-Integration**: Validierung gegen Ontologien
+
+**Performance:**
+- ✅ **Lokale Geschwindigkeit**: Keine API-Latenz
+- ✅ **Batch-Processing**: Effiziente Massenverarbeitung
+- ✅ **Cache-System**: Wiederverwendung von Online-Daten
+- ✅ **Fuzzy Matching**: Robuste Entitätserkennung
+
+---
+
+## Lizenz
+
+AGPL v3 - Siehe LICENSE.md
+    aliases: ["BMW", "Bayerische Motoren Werke", "BMW Group"]
+    type: "ORG"
+    domain: "wirtschaft"
+    description: "Deutscher Premium-Automobilhersteller"
+    uri: "http://autograph.custom/wirtschaft/bmw_ag"
+    properties:
+      industry: "Automotive"
+      founded: "1916"
+      headquarters: "München"
+      employees: "120000"
+```
+
+#### **Medizin-Katalog (entity_catalogs/medizin.yaml)**
+```yaml
+entities:
+  Aspirin:
+    canonical_name: "Acetylsalicylsäure"
+    aliases: ["Aspirin", "ASS", "Acetylsalicylsäure"]
+    type: "DRUG"
+    domain: "medizin"
+    description: "Schmerzmittel und Blutverdünner"
+    uri: "http://autograph.custom/medizin/aspirin"
+    properties:
+      drug_class: "NSAID"
+      atc_code: "N02BA01"
+      indication: "Schmerzen, Fieber, Entzündung"
+```
+
+### 🔧 Integration in Code
+
+```python
+from autograph.processors.entity_linker import EntityLinker
+
+# Entity Linker-Konfiguration
+config = {
+    'entity_linking_mode': 'offline',  # oder 'hybrid', 'online'
+    'entity_linking_confidence_threshold': 0.5,
+    'custom_entity_catalogs_dir': './entity_catalogs/'
+}
+
+linker = EntityLinker(config)
+
+# Test-Daten
+test_data = [{
+    'entities': [{'text': 'Aspirin', 'label': 'DRUG', 'type': 'DRUG'}],
+    'domain': 'medizin',
+    'content': 'Aspirin ist ein Schmerzmittel'
+}]
+
+result = linker.process(test_data)
+linked_entity = result['entities'][0]
+
+if linked_entity.get('linked', False):
+    print(f"Verknüpft: {linked_entity['canonical_name']}")
+    print(f"URI: {linked_entity['uri']}")
+    print(f"Konfidenz: {linked_entity['confidence']:.3f}")
+```
+
+### 🏢 Enterprise-Benefits
+
+**Sicherheit & Compliance:**
+- ✅ **Air-Gapped Support**: Funktioniert ohne Internet
+- ✅ **Custom Entity-Kataloge**: Firmen-spezifische Entitäten
+- ✅ **DSGVO-konform**: Keine ungewollten Online-Verbindungen
+- ✅ **SOC2/ISO 27001**: Kontrollierte Datenflüsse
+
+**Disambiguation & Qualität:**
+- ✅ **Kontext-basiert**: Mehrdeutigkeitsauflösung durch Kontext
+- ✅ **Domain-spezifisch**: Medizin, Wirtschaft, etc.
+- ✅ **Confidence-Scores**: Verlässlichkeitsbewertung
+- ✅ **Ontologie-Integration**: Validierung gegen Ontologien
+
+**Performance:**
+- ✅ **Lokale Geschwindigkeit**: Keine API-Latenz
+- ✅ **Batch-Processing**: Effiziente Massenverarbeitung
+- ✅ **Cache-System**: Wiederverwendung von Online-Daten
+- ✅ **Fuzzy Matching**: Robuste Entitätserkennung
 
 ---
 

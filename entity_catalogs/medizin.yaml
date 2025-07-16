@@ -1,0 +1,84 @@
+catalog_info:
+  domain: medizin
+  created: "2025-01-16T12:00:00"
+  description: "Medizinische Entitäten für Healthcare Entity Linking"
+  version: "1.0"
+
+entities:
+  Aspirin:
+    canonical_name: "Acetylsalicylsäure"
+    aliases: ["Aspirin", "ASS", "Acetylsalicylsäure", "Aspirin 100"]
+    type: "DRUG"
+    domain: "medizin"
+    description: "Schmerzmittel und Blutverdünner"
+    uri: "http://autograph.custom/medizin/aspirin"
+    properties:
+      drug_class: "NSAID"
+      atc_code: "N02BA01"
+      indication: "Schmerzen, Fieber, Entzündung"
+      contraindications: "Allergien, Blutungsneigung"
+
+  Paracetamol:
+    canonical_name: "Paracetamol"
+    aliases: ["Paracetamol", "Acetaminophen", "Tylenol"]
+    type: "DRUG"
+    domain: "medizin"
+    description: "Schmerz- und Fiebermittel"
+    uri: "http://autograph.custom/medizin/paracetamol"
+    properties:
+      drug_class: "Analgetika"
+      atc_code: "N02BE01"
+      indication: "Schmerzen, Fieber"
+      max_dose: "4g/Tag"
+
+  Diabetes:
+    canonical_name: "Diabetes mellitus"
+    aliases: ["Diabetes", "Diabetes mellitus", "Zuckerkrankheit"]
+    type: "DISEASE"
+    domain: "medizin"
+    description: "Chronische Stoffwechselerkrankung"
+    uri: "http://autograph.custom/medizin/diabetes"
+    properties:
+      icd_code: "E10-E14"
+      category: "Endokrine Erkrankung"
+      symptoms: "Durst, häufiges Wasserlassen, Müdigkeit"
+      treatment: "Insulin, Metformin, Diät"
+
+  Hypertonie:
+    canonical_name: "Arterielle Hypertonie"
+    aliases: ["Hypertonie", "Bluthochdruck", "Hochdruck"]
+    type: "DISEASE"
+    domain: "medizin"
+    description: "Erhöhter Blutdruck"
+    uri: "http://autograph.custom/medizin/hypertonie"
+    properties:
+      icd_code: "I10-I15"
+      category: "Herz-Kreislauf-Erkrankung"
+      symptoms: "Kopfschmerzen, Schwindel"
+      treatment: "ACE-Hemmer, Betablocker, Diuretika"
+
+  Röntgen:
+    canonical_name: "Röntgenuntersuchung"
+    aliases: ["Röntgen", "X-Ray", "Radiographie"]
+    type: "PROCEDURE"
+    domain: "medizin"
+    description: "Bildgebendes Verfahren mit Röntgenstrahlen"
+    uri: "http://autograph.custom/medizin/roentgen"
+    properties:
+      category: "Bildgebung"
+      radiation: "ionisierend"
+      applications: "Knochen, Lunge, Abdomen"
+      contraindications: "Schwangerschaft"
+
+  MRT:
+    canonical_name: "Magnetresonanztomographie"
+    aliases: ["MRT", "MRI", "Kernspintomographie"]
+    type: "PROCEDURE"
+    domain: "medizin"
+    description: "Bildgebendes Verfahren ohne Strahlung"
+    uri: "http://autograph.custom/medizin/mrt"
+    properties:
+      category: "Bildgebung"
+      radiation: "keine"
+      applications: "Gehirn, Wirbelsäule, Gelenke"
+      contraindications: "Metall-Implantate"

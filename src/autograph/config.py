@@ -75,21 +75,89 @@ class ProcessorConfig(BaseModel):
     )
 
 
+class OntologyConfig(BaseModel):
+    """Konfiguration für Ontologie-Integration"""
+
+    # Basis-Konfiguration
+    mode: str = Field(
+        default="offline", description="Ontologie-Modus: offline, hybrid, online"
+    )
+    online_fallback: bool = Field(
+        default=False, description="Online-Fallback bei Hybrid-Modus"
+    )
+    cache_duration: str = Field(
+        default="30d", description="Cache-Gültigkeit (z.B. 30d, 24h)"
+    )
+    internet_timeout: int = Field(default=5, description="Internet-Timeout in Sekunden")
+
+    # Pfade
+    local_ontologies_dir: str = Field(
+        default="./ontologies/", description="Pfad zu lokalen Ontologien"
+    )
+    custom_ontologies_dir: str = Field(
+        default="./custom_ontologies/", description="Pfad zu Custom-Ontologien"
+    )
+    cache_dir: str = Field(default="./cache/", description="Cache-Verzeichnis")
+
+    # Quellen-Konfiguration
+    sources: list = Field(default_factory=list, description="Ontologie-Quellen-Liste")
+
+    # Default Quellen für verschiedene Modi
+    @property
+    def default_offline_sources(self):
+        return [
+            {"type": "custom_yaml", "path": self.custom_ontologies_dir, "priority": 1},
+            {"type": "local_rdf", "path": self.local_ontologies_dir, "priority": 2},
+        ]
+
+    @property
+    def default_hybrid_sources(self):
+        return [
+            {"type": "custom_yaml", "path": self.custom_ontologies_dir, "priority": 1},
+            {
+                "type": "cached_schema_org",
+                "cache_path": f"{self.cache_dir}/schema_org.ttl",
+                "priority": 2,
+            },
+            {"type": "local_rdf", "path": self.local_ontologies_dir, "priority": 3},
+            {"type": "online_schema_org", "priority": 4}
+            if self.online_fallback
+            else None,
+        ]
+
+    @property
+    def default_online_sources(self):
+        return [
+            {"type": "online_schema_org", "priority": 1},
+            {"type": "custom_yaml", "path": self.custom_ontologies_dir, "priority": 2},
+            {
+                "type": "cached_schema_org",
+                "cache_path": f"{self.cache_dir}/schema_org.ttl",
+                "priority": 3,
+            },
+        ]
+
+
 class AutoGraphConfig(BaseModel):
     """Haupt-Konfiguration für AutoGraph"""
 
     model_config = ConfigDict(extra="allow")
 
     # Basis-Konfiguration
-    project_name: str = Field(description="Projektname")
+    project_name: str = Field(default="autograph-default", description="Projektname")
     output_dir: Path = Field(default=Path("./output"), description="Output Verzeichnis")
     log_level: str = Field(default="INFO", description="Log Level")
 
-    # Komponenten-Konfiguration
-    neo4j: Neo4jConfig = Field(description="Neo4j Konfiguration")
+    # Komponenten-Konfiguration (alle optional für CLI-Tests)
+    neo4j: Optional[Neo4jConfig] = Field(
+        default=None, description="Neo4j Konfiguration"
+    )
     llm: Optional[LLMConfig] = Field(default=None, description="LLM Konfiguration")
     extractor: ExtractorConfig = Field(default_factory=ExtractorConfig)
     processor: ProcessorConfig = Field(default_factory=ProcessorConfig)
+    ontology: Optional[OntologyConfig] = Field(
+        default_factory=lambda: OntologyConfig(), description="Ontologie-Konfiguration"
+    )
 
     # Pipeline Konfiguration
     enable_llm_evaluation: bool = Field(

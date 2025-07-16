@@ -15,6 +15,7 @@ from .extractors.text import TextExtractor
 from .extractors.table import TableExtractor
 from .processors.ner import NERProcessor
 from .storage.neo4j import Neo4jStorage
+from .ontology import OntologyManager
 
 
 def setup_logging(level: str = "INFO"):
@@ -540,9 +541,315 @@ def _menu_process_table(ctx):
         click.echo(f"❌ Fehler bei der Verarbeitung: {str(e)}")
 
 
+@cli.group()
+@click.pass_context
+def ontology(ctx):
+    """Ontologie-Management Kommandos"""
+    pass
+
+
+@ontology.command()
+@click.option(
+    "--mode",
+    type=click.Choice(["offline", "hybrid", "online"]),
+    default="offline",
+    help="Ontologie-Modus",
+)
+@click.pass_context
+def status(ctx, mode: str):
+    """Zeigt Status der Ontologie-Integration"""
+    try:
+        config = _get_config(ctx)
+
+        # Ontologie-Konfiguration setzen
+        from .ontology import OntologyManager
+        from .config import OntologyConfig
+
+        if not config.ontology:
+            config.ontology = OntologyConfig(mode=mode)
+        else:
+            config.ontology.mode = mode
+
+        ontology_manager = OntologyManager(config.model_dump())
+        info = ontology_manager.get_ontology_info()
+
+        click.echo("\n[BRAIN] Ontologie-Status")
+        click.echo(f"Modus: {info['mode']}")
+        click.echo(f"Ladezeit: {info['load_time']:.2f}s")
+        click.echo(f"Klassen: {info['classes_count']}")
+        click.echo(f"Relationen: {info['relations_count']}")
+        click.echo(f"Namespaces: {', '.join(info['namespaces'])}")
+        click.echo(f"Quellen geladen: {len(info['sources_loaded'])}")
+
+        if info["sources_loaded"]:
+            click.echo("\n[+] Geladene Quellen:")
+            for source in info["sources_loaded"]:
+                click.echo(f"  * {source}")
+
+    except Exception as e:
+        click.echo(f"[ERROR] Fehler beim Laden der Ontologie: {e}")
+
+
+@ontology.command()
+@click.argument("domain")
+@click.argument("output_path", type=click.Path())
+@click.pass_context
+def create_example(ctx, domain: str, output_path: str):
+    """Erstellt eine Beispiel-Ontologie für eine Domain"""
+    try:
+        from .ontology.custom_ontology_parser import CustomOntologyParser
+
+        parser = CustomOntologyParser()
+        output_file = Path(output_path)
+
+        parser.create_example_ontology(output_file, domain)
+        click.echo(f"[OK] Beispiel-Ontologie für '{domain}' erstellt: {output_path}")
+
+    except Exception as e:
+        click.echo(f"[ERROR] Fehler beim Erstellen der Ontologie: {e}")
+
+
+@ontology.command()
+@click.argument("entity")
+@click.argument("ner_label")
+@click.option("--domain", help="Domain-Kontext")
+@click.option(
+    "--mode",
+    type=click.Choice(["offline", "hybrid", "online"]),
+    default="offline",
+    help="Ontologie-Modus",
+)
+@click.pass_context
+def map_entity(ctx, entity: str, ner_label: str, domain: str, mode: str):
+    """Mappt eine Entität auf Ontologie-Konzepte"""
+    try:
+        config = _get_config(ctx)
+        from .config import OntologyConfig
+
+        # Ontologie-Konfiguration setzen
+        if not config.ontology:
+            config.ontology = OntologyConfig(mode=mode)
+        else:
+            config.ontology.mode = mode
+
+        ontology_manager = OntologyManager(config.model_dump())
+        mapping = ontology_manager.map_entity(entity, ner_label, domain)
+
+        click.echo(f"\n[TARGET] Entity-Mapping für '{entity}'")
+        click.echo(f"NER-Label: {ner_label}")
+        click.echo(f"Domain: {domain or 'Keine'}")
+        click.echo(f"Konfidenz: {mapping['confidence']:.2f}")
+
+        if mapping["mapped_classes"]:
+            click.echo("\n[LIST] Gemappte Klassen:")
+            for cls in mapping["mapped_classes"]:
+                click.echo(f"  * {cls}")
+        else:
+            click.echo("\n[ERROR] Keine passenden Ontologie-Klassen gefunden")
+
+    except Exception as e:
+        click.echo(f"[ERROR] Fehler beim Entity-Mapping: {e}")
+
+
+@ontology.command()
+@click.argument("relation")
+@click.option("--domain", help="Domain-Kontext")
+@click.option(
+    "--mode",
+    type=click.Choice(["offline", "hybrid", "online"]),
+    default="offline",
+    help="Ontologie-Modus",
+)
+@click.pass_context
+def map_relation(ctx, relation: str, domain: str, mode: str):
+    """Mappt eine Relation auf Ontologie-Properties"""
+    try:
+        config = _get_config(ctx)
+        from .config import OntologyConfig
+
+        # Ontologie-Konfiguration setzen
+        if not config.ontology:
+            config.ontology = OntologyConfig(mode=mode)
+        else:
+            config.ontology.mode = mode
+
+        ontology_manager = OntologyManager(config.model_dump())
+        mapping = ontology_manager.map_relation(relation, domain)
+
+        click.echo(f"\n[LINK] Relation-Mapping für '{relation}'")
+        click.echo(f"Domain: {domain or 'Keine'}")
+        click.echo(f"Konfidenz: {mapping['confidence']:.2f}")
+
+        if mapping["mapped_properties"]:
+            click.echo("\n[LIST] Gemappte Properties:")
+            for prop in mapping["mapped_properties"]:
+                click.echo(f"  * {prop}")
+        else:
+            click.echo("\n[ERROR] Keine passenden Ontologie-Properties gefunden")
+
+    except Exception as e:
+        click.echo(f"[ERROR] Fehler beim Relation-Mapping: {e}")
+
+
+def _get_config(ctx):
+    """Holt Konfiguration aus Context oder erstellt Default"""
+    if ctx.obj and ctx.obj.get("config"):
+        return ctx.obj["config"]
+    else:
+        return AutoGraphConfig()
+
+
 def main():
     """Entry point für die CLI"""
     cli()
+
+
+@click.group()
+@click.pass_context
+def entity_linking(ctx):
+    """Entity Linking Commands"""
+    pass
+
+
+@entity_linking.command()
+@click.option(
+    "--mode",
+    type=click.Choice(["offline", "hybrid", "online"]),
+    default="offline",
+    help="Entity Linking Modus",
+)
+@click.pass_context
+def el_status(ctx, mode: str):
+    """Zeigt Entity Linking Status"""
+    try:
+        config = _get_config(ctx)
+        from .processors.entity_linker import EntityLinker
+
+        # Entity Linker-Konfiguration
+        linker_config = config.model_dump()
+        linker_config["entity_linking_mode"] = mode
+
+        linker = EntityLinker(linker_config)
+        stats = linker.get_linking_statistics()
+
+        click.echo(f"\n[LINK] Entity Linking Status")
+        click.echo(f"Modus: {stats['mode']}")
+        click.echo(f"Confidence Threshold: {stats['confidence_threshold']}")
+        click.echo(
+            f"Gesamt-Entitäten in Katalogen: {stats['total_entities_in_catalogs']}"
+        )
+
+        click.echo(f"\n[LIST] Verfügbare Kataloge:")
+        for catalog_name, entity_count in stats["catalogs"].items():
+            click.echo(f"  * {catalog_name}: {entity_count} Entitäten")
+
+        click.echo(f"\nCache-Verzeichnis: {stats['cache_dir']}")
+        click.echo(f"Custom-Kataloge: {stats['custom_catalogs_dir']}")
+
+    except Exception as e:
+        click.echo(f"[ERROR] Fehler beim Entity Linking Status: {e}")
+
+
+@entity_linking.command()
+@click.argument("entity_text")
+@click.argument("entity_type")
+@click.option("--domain", help="Domain-Kontext")
+@click.option("--context", default="", help="Kontext-Text für Disambiguation")
+@click.option(
+    "--mode",
+    type=click.Choice(["offline", "hybrid", "online"]),
+    default="offline",
+    help="Entity Linking Modus",
+)
+@click.pass_context
+def link_entity(
+    ctx, entity_text: str, entity_type: str, domain: str, context: str, mode: str
+):
+    """Testet Entity Linking für eine einzelne Entität"""
+    try:
+        config = _get_config(ctx)
+        from .processors.entity_linker import EntityLinker
+
+        # Entity Linker-Konfiguration
+        linker_config = config.model_dump()
+        linker_config["entity_linking_mode"] = mode
+
+        linker = EntityLinker(linker_config)
+
+        # Test-Entität erstellen
+        test_data = [
+            {
+                "entities": [
+                    {"text": entity_text, "label": entity_type, "type": entity_type}
+                ],
+                "domain": domain or "allgemein",
+                "content": context,
+            }
+        ]
+
+        result = linker.process(test_data)
+        linked_entity = result["entities"][0]
+
+        click.echo(f"\n[TARGET] Entity Linking für '{entity_text}'")
+        click.echo(f"Typ: {entity_type}")
+        click.echo(f"Domain: {domain or 'Keine'}")
+        click.echo(
+            f"Kontext: {context[:50]}..."
+            if len(context) > 50
+            else f"Kontext: {context}"
+        )
+
+        if linked_entity.get("linked", False):
+            click.echo(f"\n[SUCCESS] Erfolgreich verknüpft!")
+            click.echo(f"Kanonischer Name: {linked_entity.get('canonical_name')}")
+            click.echo(f"URI: {linked_entity.get('uri')}")
+            click.echo(f"Beschreibung: {linked_entity.get('description')}")
+            click.echo(f"Konfidenz: {linked_entity.get('confidence', 0):.3f}")
+
+            metadata = linked_entity.get("linking_metadata", {})
+            click.echo(f"Match-Typ: {metadata.get('match_type')}")
+            click.echo(f"Katalog: {metadata.get('catalog')}")
+            click.echo(f"Kandidaten: {metadata.get('candidates_count', 0)}")
+
+            properties = linked_entity.get("properties", {})
+            if properties:
+                click.echo(f"\n[LIST] Eigenschaften:")
+                for key, value in properties.items():
+                    click.echo(f"  * {key}: {value}")
+        else:
+            metadata = linked_entity.get("linking_metadata", {})
+            reason = metadata.get("unlinked_reason", "unbekannt")
+            click.echo(f"\n[ERROR] Nicht verknüpft (Grund: {reason})")
+
+    except Exception as e:
+        click.echo(f"[ERROR] Fehler beim Entity Linking: {e}")
+
+
+@entity_linking.command()
+@click.argument("domain")
+@click.argument("output_path")
+@click.pass_context
+def create_catalog(ctx, domain: str, output_path: str):
+    """Erstellt Beispiel-Entity-Katalog für eine Domäne"""
+    try:
+        config = _get_config(ctx)
+        from .processors.entity_linker import EntityLinker
+
+        linker = EntityLinker(config.model_dump())
+        linker.create_custom_catalog_example(domain, output_path)
+
+        click.echo(f"\n[SUCCESS] Beispiel-Katalog erstellt: {output_path}")
+        click.echo(f"Domain: {domain}")
+        click.echo(
+            f"Bearbeiten Sie die Datei und fügen Sie Ihre eigenen Entitäten hinzu."
+        )
+
+    except Exception as e:
+        click.echo(f"[ERROR] Fehler beim Erstellen des Katalogs: {e}")
+
+
+# Entity Linking zur Hauptgruppe hinzufügen
+cli.add_command(entity_linking)
 
 
 if __name__ == "__main__":
