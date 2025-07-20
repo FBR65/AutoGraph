@@ -13,13 +13,20 @@ from pathlib import Path
 # Add src to Python path
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
-from autograph.cli import main as cli_main
+# Direct CLI import - bypass problematic imports
+try:
+    from autograph.cli import main as cli_main
+except ImportError as e:
+    print(f"❌ Fehler beim Import der CLI: {e}")
+    print("Stellen Sie sicher, dass alle Abhängigkeiten installiert sind:")
+    print("  uv pip install -e .")
+    sys.exit(1)
 
 
 def main():
     """
     Hauptfunktion für AutoGraph
-    
+
     Delegiert an das CLI-System für alle Funktionen:
     - Text-Verarbeitung (NER + Relation Extraction)
     - YAML-Generierung (Entity-Kataloge & Ontologien)
@@ -49,16 +56,12 @@ Examples:
   
 For detailed help on any command:
   python main.py <command> --help
-        """
+        """,
     )
-    
+
     # Add version
-    parser.add_argument(
-        '--version', 
-        action='version', 
-        version='AutoGraph 0.1.0'
-    )
-    
+    parser.add_argument("--version", action="version", version="AutoGraph 0.1.0")
+
     # If no arguments provided, show help
     if len(sys.argv) == 1:
         parser.print_help()
@@ -66,10 +69,10 @@ For detailed help on any command:
         print("  python main.py menu     # Interactive menu")
         print("  python main.py --help   # Full help")
         return
-    
+
     # Parse arguments and delegate to CLI
-    args = parser.parse_known_args()[1]
-    
+    parser.parse_known_args()[1]
+
     # Delegate to CLI system
     sys.argv = ["autograph"] + sys.argv[1:]
     cli_main()

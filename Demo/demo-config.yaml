@@ -1,0 +1,35 @@
+enable_llm_evaluation: true
+experimental_features: {}
+extractor:
+  chunk_overlap: 200
+  chunk_size: 1000
+  scraping_delay: 1.0
+  text_chunking: true
+  user_agent: AutoGraph/1.0
+log_level: INFO
+neo4j:
+  database: neo4j
+  password: password
+  uri: bolt://localhost:7687
+  username: neo4j
+ontology:
+  cache_dir: ./cache/
+  cache_duration: 30d
+  custom_ontologies_dir: ./custom_ontologies/
+  internet_timeout: 5
+  local_ontologies_dir: ./ontologies/
+  mode: offline
+  online_fallback: false
+  sources: []
+output_dir: output
+processor:
+  entity_similarity_threshold: 0.85
+  ner_confidence_threshold: 0.8
+  ner_model: de_core_news_lg
+  re_confidence_threshold: 0.7
+  re_model: bert-base-multilingual-cased
+project_name: Demo-Projekt
+quality_metrics:
+- precision
+- recall
+- f1

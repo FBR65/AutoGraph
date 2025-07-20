@@ -55,7 +55,7 @@ class ProcessorConfig(BaseModel):
     """Konfiguration für Datenverarbeitung"""
 
     # NER Konfiguration
-    ner_model: str = Field(default="de_core_news_sm", description="SpaCy NER Modell")
+    ner_model: str = Field(default="de_core_news_lg", description="SpaCy NER Modell")
     ner_confidence_threshold: float = Field(
         default=0.8, description="Mindest-Konfidenz für NER"
     )
@@ -189,9 +189,25 @@ class AutoGraphConfig(BaseModel):
 
         config_path.parent.mkdir(parents=True, exist_ok=True)
 
+        # Konvertiere zu Dictionary und behandle Path-Objekte
+        config_dict = self.model_dump(exclude_none=True)
+
+        # Konvertiere alle Path-Objekte zu Strings
+        def convert_paths(obj):
+            if isinstance(obj, dict):
+                return {k: convert_paths(v) for k, v in obj.items()}
+            elif isinstance(obj, list):
+                return [convert_paths(item) for item in obj]
+            elif isinstance(obj, Path):
+                return str(obj)
+            else:
+                return obj
+
+        clean_config = convert_paths(config_dict)
+
         with open(config_path, "w", encoding="utf-8") as f:
             yaml.dump(
-                self.model_dump(exclude_none=True),
+                clean_config,
                 f,
                 default_flow_style=False,
                 allow_unicode=True,

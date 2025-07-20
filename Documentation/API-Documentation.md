@@ -274,17 +274,6 @@ python main.py
 
 ---
 
-## 📞 Support & Entwicklung
-
-- **Repository**: https://github.com/FBR65/AutoGraph
-- **Issues**: Für Bugs und Feature-Requests
-- **Discussions**: Für Fragen und Ideen
-- **Status**: Aktive Entwicklung
-
-**Mitwirken**: Pull Requests willkommen! Siehe Contributing Guidelines.
-
----
-
 ## 🚀 Nächste Schritte
 
 1. **[CLI-Dokumentation](./CLI-Documentation.md)** - Funktionsfähige Command Line Tools

@@ -1,0 +1,16 @@
+constraints: []
+description: Automatisch generierte Ontologie für medizin
+domain: medizin
+entity_types:
+  Entity:
+    description: Entity aus medizin-Domäne
+    properties: null
+  Metadata:
+    description: Metadata aus medizin-Domäne
+    properties: null
+relationship_types:
+  RELATED:
+    description: RELATED Beziehung
+    domain: null
+    range: null
+version: 1.0.0

@@ -1,0 +1,11 @@
+description: Automatisch generierter Entity-Katalog für medizin
+domain: medizin
+entities:
+  PER:
+    description: Unknown aus medizin-Domäne
+    examples:
+    - Maria Müller
+    - Gute Besserung
+    frequency: 2
+    type: Unknown
+version: 1.0.0

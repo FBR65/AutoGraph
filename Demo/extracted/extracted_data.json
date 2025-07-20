@@ -1,0 +1,12 @@
+[
+  {
+    "content": "Patient: Maria Müller, 45 Jahre alt\nDiagnose: Migräne mit Aura\nAnamnese: Die Patientin klagt über wiederkehrende Kopfschmerzen seit 3 Monaten.\nSymptome: Starke pulsierende Kopfschmerzen, Lichtempfindlichkeit, Übelkeit\nBefund: Neurologische Untersuchung unauffällig\nTherapie: Aspirin 500mg bei Bedarf, Sumatriptan 50mg bei schweren Attacken\nPrognose: Gute Besserung bei konsequenter Therapie\nNachkontrolle: In 4 Wochen beim Hausarzt Dr. Schmidt\n",
+    "source": "Demo\\demo_data.txt",
+    "chunk_id": 0,
+    "type": "text_chunk",
+    "metadata": {
+      "file_size": 457,
+      "chunk_size": 444
+    }
+  }
+]

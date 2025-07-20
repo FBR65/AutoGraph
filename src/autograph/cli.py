@@ -70,7 +70,9 @@ def extract(ctx, source: str, output: Optional[str], output_format: str):
 
         import json
 
-        with open(output_path / f"extracted_data.{output_format}", "w") as f:
+        with open(
+            output_path / f"extracted_data.{output_format}", "w", encoding="utf-8"
+        ) as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
 
         click.echo(f"Daten gespeichert in: {output_path}")
@@ -696,7 +698,12 @@ def _get_config(ctx):
     if ctx.obj and ctx.obj.get("config"):
         return ctx.obj["config"]
     else:
-        return AutoGraphConfig()
+        # Erstelle Standard-Konfiguration
+        from .config import Neo4jConfig
+
+        return AutoGraphConfig(
+            project_name="autograph", neo4j=Neo4jConfig(password="password")
+        )
 
 
 def main():
@@ -850,6 +857,182 @@ def create_catalog(ctx, domain: str, output_path: str):
 
 # Entity Linking zur Hauptgruppe hinzufügen
 cli.add_command(entity_linking)
+
+
+@cli.group()
+def yaml():
+    """YAML-Generierung für Entity-Kataloge und Ontologien"""
+    pass
+
+
+@yaml.command("entity-from-text")
+@click.option(
+    "--domain", "-d", required=True, help="Zieldomäne (z.B. medizin, literatur)"
+)
+@click.option("--files", "-f", multiple=True, required=True, help="Eingabe-Textdateien")
+@click.option("--output", "-o", default="entity-catalog.yaml", help="Ausgabe-Datei")
+@click.option("--min-frequency", default=2, help="Mindest-Häufigkeit für Entitäten")
+@click.pass_context
+def entity_from_text(ctx, domain: str, files: tuple, output: str, min_frequency: int):
+    """Generiert YAML Entity-Katalog aus Textdateien"""
+    config = _get_config(ctx)
+
+    click.echo(f"Generiere Entity-Katalog für Domäne: {domain}")
+    click.echo(f"Eingabe-Dateien: {', '.join(files)}")
+    click.echo(f"Ausgabe: {output}")
+
+    try:
+        from .processors.ner import NERProcessor
+        from collections import Counter
+        import yaml
+
+        processor = NERProcessor(config.processor.model_dump())
+        all_entities = []
+
+        # Verarbeite alle Dateien
+        for file_path in files:
+            if not Path(file_path).exists():
+                click.echo(f"⚠️  Datei nicht gefunden: {file_path}")
+                continue
+
+            extractor = TextExtractor(config.extractor.model_dump())
+            data = extractor.extract(file_path)
+
+            for item in data:
+                result = processor.process([item])
+                # result ist ein dict mit 'entities' und 'relationships' keys
+                if isinstance(result, dict) and "entities" in result:
+                    all_entities.extend(result["entities"])
+                elif hasattr(result, "entities"):
+                    all_entities.extend(result.entities)
+
+        # Zähle Entitäten nach Labels
+        entity_counts = Counter()
+        entity_examples = {}
+
+        for entity in all_entities:
+            # Behandle sowohl Dict- als auch Objekt-Entitäten
+            if isinstance(entity, dict):
+                label = entity.get("label", entity.get("text", "Unknown"))
+                entity_type = entity.get("type", "Unknown")
+                text = entity.get("text", label)
+            else:
+                label = getattr(entity, "label", getattr(entity, "text", "Unknown"))
+                entity_type = getattr(entity, "type", "Unknown")
+                text = getattr(entity, "text", label)
+
+            key = (label, entity_type)
+            entity_counts[key] += 1
+            if key not in entity_examples:
+                entity_examples[key] = []
+            if len(entity_examples[key]) < 3:  # Max 3 Beispiele
+                entity_examples[key].append(text)
+
+        # Erstelle YAML-Struktur
+        catalog = {
+            "domain": domain,
+            "version": "1.0.0",
+            "description": f"Automatisch generierter Entity-Katalog für {domain}",
+            "entities": {},
+        }
+
+        for (label, entity_type), count in entity_counts.items():
+            if count >= min_frequency:
+                catalog["entities"][label] = {
+                    "type": entity_type,
+                    "frequency": count,
+                    "examples": entity_examples[(label, entity_type)],
+                    "description": f"{entity_type} aus {domain}-Domäne",
+                }
+
+        # Speichere YAML
+        with open(output, "w", encoding="utf-8") as f:
+            yaml.dump(
+                catalog, f, allow_unicode=True, default_flow_style=False, indent=2
+            )
+
+        click.echo(f"✅ Entity-Katalog erstellt: {output}")
+        click.echo(f"📊 Entitäten gefunden: {len(catalog['entities'])}")
+        click.echo(f"🔍 Mindest-Häufigkeit: {min_frequency}")
+
+    except Exception as e:
+        click.echo(f"❌ Fehler: {str(e)}", err=True)
+        raise click.ClickException(str(e))
+
+
+@yaml.command("ontology-from-graph")
+@click.option("--domain", "-d", required=True, help="Zieldomäne")
+@click.option("--output", "-o", default="ontology.yaml", help="Ausgabe-Datei")
+@click.option("--include-properties", is_flag=True, help="Eigenschaften einbeziehen")
+@click.pass_context
+def ontology_from_graph(ctx, domain: str, output: str, include_properties: bool):
+    """Generiert YAML-Ontologie aus Knowledge Graph"""
+    config = _get_config(ctx)
+
+    click.echo(f"Generiere Ontologie für Domäne: {domain}")
+    click.echo(f"Ausgabe: {output}")
+
+    try:
+        from .storage.neo4j import Neo4jStorage
+        import yaml
+
+        storage = Neo4jStorage(config.neo4j.model_dump())
+
+        # Hole alle Entity-Typen und Beziehungstypen aus der Datenbank
+        query = """
+        MATCH (n)
+        WITH DISTINCT labels(n) as node_labels
+        UNWIND node_labels as label
+        RETURN DISTINCT label
+        ORDER BY label
+        """
+        entity_types = [record["label"] for record in storage.query(query)]
+
+        query = """
+        MATCH ()-[r]->()
+        RETURN DISTINCT type(r) as rel_type
+        ORDER BY rel_type
+        """
+        relationship_types = [record["rel_type"] for record in storage.query(query)]
+
+        # Erstelle Ontologie-Struktur
+        ontology = {
+            "domain": domain,
+            "version": "1.0.0",
+            "description": f"Automatisch generierte Ontologie für {domain}",
+            "entity_types": {},
+            "relationship_types": {},
+            "constraints": [],
+        }
+
+        # Entity-Typen
+        for entity_type in entity_types:
+            ontology["entity_types"][entity_type] = {
+                "description": f"{entity_type} aus {domain}-Domäne",
+                "properties": [] if include_properties else None,
+            }
+
+        # Relationship-Typen
+        for rel_type in relationship_types:
+            ontology["relationship_types"][rel_type] = {
+                "description": f"{rel_type} Beziehung",
+                "domain": None,  # Kann manuell spezifiziert werden
+                "range": None,
+            }
+
+        # Speichere YAML
+        with open(output, "w", encoding="utf-8") as f:
+            yaml.dump(
+                ontology, f, allow_unicode=True, default_flow_style=False, indent=2
+            )
+
+        click.echo(f"✅ Ontologie erstellt: {output}")
+        click.echo(f"📊 Entity-Typen: {len(entity_types)}")
+        click.echo(f"🔗 Beziehungstypen: {len(relationship_types)}")
+
+    except Exception as e:
+        click.echo(f"❌ Fehler: {str(e)}", err=True)
+        raise click.ClickException(str(e))
 
 
 if __name__ == "__main__":
